@@ -1,0 +1,6 @@
+streamlit
+matplotlib
+altair
+streamlit-option-menu
+s3fs
+openpyxl
