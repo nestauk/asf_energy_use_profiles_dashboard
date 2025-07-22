@@ -16,3 +16,6 @@
 
 4. Install the package requirements:
 `pip install -r requirements.txt`
+
+5. Install pre-commit hooks:
+`pip install pre-commit`
