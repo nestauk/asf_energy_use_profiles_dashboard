@@ -9,7 +9,7 @@ import streamlit as st
 import altair as alt
 
 # Local imports
-from utils.fonts_setup import nestafont, NESTA_COLOURS
+from config.fonts_setup import nestafont, NESTA_COLOURS
 from config import configs
 from data_getters import data_getters as dg
 from utils.data_vis_utils import (

@@ -7,7 +7,7 @@ import pandas as pd
 import altair as alt
 
 # Local imports
-from utils.fonts_setup import NESTA_COLOURS
+from config.fonts_setup import NESTA_COLOURS
 from config import configs
 
 # Define a mapping of profiles to colours for use in charts

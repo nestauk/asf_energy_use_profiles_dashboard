@@ -16,7 +16,7 @@ from utils.data_vis_utils import (
     create_chart_daily_consumption_multiple_profiles,
     plot_contextual_info,
 )
-from utils.fonts_setup import nestafont, NESTA_COLOURS
+from config.fonts_setup import nestafont, NESTA_COLOURS
 from config.highlights import highlights
 from config import configs
 

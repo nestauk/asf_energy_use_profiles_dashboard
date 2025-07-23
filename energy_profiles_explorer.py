@@ -20,7 +20,7 @@ from streamlit_option_menu import option_menu  # For creating a sidebar menu
 import os
 
 # Local imports
-from utils.fonts_setup import nestafont, NESTA_COLOURS
+from config.fonts_setup import nestafont, NESTA_COLOURS
 from config.css_style import set_css_style
 from pages.about_dashboard_page import about_dashboard_page
 from pages.overview_results_page import overview_results_page
