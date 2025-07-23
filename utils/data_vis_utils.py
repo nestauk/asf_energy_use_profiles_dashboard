@@ -108,7 +108,7 @@ def create_chart_daily_consumption(
         .mark_line()
         .encode(
             x=alt.X("read_time:O", title=""),
-            y=alt.Y(f"{profile_col}_avg:Q", title=f"{type} consumption (kWh)"),
+            y=alt.Y(f"{profile_col}_avg:Q", title=f"{energy_type} consumption (kWh)"),
             color=alt.value(colour),
             tooltip=[
                 alt.Tooltip("read_time:O", title="Half hour"),
