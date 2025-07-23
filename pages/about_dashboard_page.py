@@ -29,7 +29,7 @@ def about_dashboard_page():
                 It provides an interactive way to view and compare energy consumption patterns, enabling users to gain insights into household energy usage.
                 
                 Use the sidebar to navigate through the different sections of the explorer.
-                - **Overview of results:** provides an overview of results, where all energy-use profiles are displayed and compared across a variety of characteristics.
+                - **Explore the results:** provides an overview of results, where all energy-use profiles are displayed and compared across a variety of characteristics.
                 - **Explore an energy-use profile:** provides the ability to explore individual energy-use profiles in more detail, including their energy consumption patterns, heating systems, and other characteristics - and how they compare with the average of the population.
                 - **About the data:** provides information about the data used to create the energy-use profiles, including the methodology and sources.
                 
