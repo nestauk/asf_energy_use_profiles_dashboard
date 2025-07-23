@@ -52,31 +52,31 @@ def set_css_style():
         [data-testid="stMetric"] {
         text-align: center;
         padding: 15px 0;
-    }
+        }
 
-    [data-testid="stMetricLabel"] {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    }
+        [data-testid="stMetricLabel"] {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
 
-    [data-testid="stMetricDeltaIcon-Up"] {
-        position: relative;
-        left: 15%;
-        -webkit-transform: translateX(-50%);
-        -ms-transform: translateX(-50%);
-        transform: translateX(-50%);
-    }
+        [data-testid="stMetricDeltaIcon-Up"] {
+            position: relative;
+            left: 15%;
+            -webkit-transform: translateX(-50%);
+            -ms-transform: translateX(-50%);
+            transform: translateX(-50%);
+        }
 
-    [data-testid="stMetricDeltaIcon-Down"] {
-        position: relative;
-        left: 15%;
-        -webkit-transform: translateX(-50%);
-        -ms-transform: translateX(-50%);
-        transform: translateX(-50%);
-    }
+        [data-testid="stMetricDeltaIcon-Down"] {
+            position: relative;
+            left: 15%;
+            -webkit-transform: translateX(-50%);
+            -ms-transform: translateX(-50%);
+            transform: translateX(-50%);
+        }
 
-        </style>
-    """,
+            </style>
+        """,
         unsafe_allow_html=True,
     )
