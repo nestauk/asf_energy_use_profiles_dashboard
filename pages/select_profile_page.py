@@ -11,7 +11,7 @@ import altair as alt
 # Local imports
 from config.fonts_setup import nestafont, NESTA_COLOURS
 from config import configs
-from data_getters import data_getters as dg
+from getters import data_getters as dg
 from utils.data_vis_utils import (
     create_chart_daily_consumption,
     create_chart_comparing_daily_consumption_summer_winter,
@@ -154,7 +154,7 @@ def setup_daily_consumption_charts(profile_selector: int):
         )
         st.altair_chart(final_chart, use_container_width=True)
 
-    if profile_selector not in configs.households_low_gas_count:
+    if profile_selector not in configs.profiles_low_gas_count:
         with gas_col:
             final_chart = create_chart_daily_consumption(
                 daily_data=gas_hh_data,
@@ -188,7 +188,7 @@ def setup_seasonal_patterns_expander(profile_selector: int):
         )
         st.altair_chart(final_chart, use_container_width=True)
     with gas_col:
-        if profile_selector not in configs.households_low_gas_count:
+        if profile_selector not in configs.profiles_low_gas_count:
             final_chart = create_chart_comparing_daily_consumption_summer_winter(
                 daily_data_summer=gas_hh_data_summer,
                 daily_data_winter=gas_hh_data_winter,

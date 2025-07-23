@@ -9,7 +9,7 @@ import streamlit as st
 import altair as alt
 
 # Local imports
-from data_getters import data_getters as dg
+from getters import data_getters as dg
 from utils.data_vis_utils import (
     plot_distribution_households,
     create_chart_average_annual_consumption,
@@ -43,6 +43,7 @@ gas_hh_data_winter = dg.get_hh_consumption_per_profile(
 )
 contextual_data = dg.get_contextual_information()
 
+
 def create_overview_tab():
     """
     Creates the overview tab for the 'Explore the results' page.
@@ -61,6 +62,7 @@ def create_overview_tab():
     st.markdown("## Key findings")
     for key, value in highlights.items():
         st.markdown(f"Profile {key}: {value}\n")
+
 
 def create_distribution_tab():
     """
@@ -89,6 +91,7 @@ def create_distribution_tab():
             )
             st.altair_chart(num_chart, use_container_width=False)
 
+
 def create_annual_consumption_tab():
     """
     Creates the annual energy consumption averages tab for the 'Explore the results' page.
@@ -112,6 +115,7 @@ def create_annual_consumption_tab():
             colour=NESTA_COLOURS[1],
         )
         st.altair_chart(annual_gas_chart, use_container_width=True)
+
 
 def create_household_information_expander():
     """
@@ -158,9 +162,7 @@ def create_household_information_expander():
 
     st.markdown("#### 💰 Working status and income")
     # Working status
-    all_not_working_col, all_working_or_students_col, mix_col = st.columns(
-        [1, 1, 1]
-    )
+    all_not_working_col, all_working_or_students_col, mix_col = st.columns([1, 1, 1])
     with all_not_working_col:
         chart_working_status = plot_contextual_info(
             data=contextual_data,
@@ -201,8 +203,8 @@ def create_household_information_expander():
         st.altair_chart(chart_income_over_90k, use_container_width=True)
 
     st.markdown("#### 🏠 Tenure")
-    priv_rented_prop_col, social_rented_prop_col, owner_occup_prop_col = (
-        st.columns([1, 1, 1])
+    priv_rented_prop_col, social_rented_prop_col, owner_occup_prop_col = st.columns(
+        [1, 1, 1]
     )
     with priv_rented_prop_col:
         chart_privately_rented = plot_contextual_info(
@@ -226,6 +228,7 @@ def create_household_information_expander():
             title="Owner occupiers or unknown tenure households",
         )
         st.altair_chart(chart_owner_occupiers, use_container_width=True)
+
 
 def create_property_information_expander():
     """
@@ -284,6 +287,7 @@ def create_property_information_expander():
             title="Flats, apartments or maisonettes",
         )
         st.altair_chart(chart_property_flats, use_container_width=True)
+
 
 def create_central_heating_and_tech_expander():
     """
@@ -363,6 +367,7 @@ def create_central_heating_and_tech_expander():
         )
         st.altair_chart(chart_ev_charging, use_container_width=True)
 
+
 def create_context_tab():
     st.markdown("## 📄 Contextual information")
 
@@ -375,10 +380,9 @@ def create_context_tab():
         create_property_information_expander()
 
     # Create an expander for central heating and presence of technologies
-    with st.expander(
-        label="Central heating and presence of technologies", icon="🔋"
-    ):
+    with st.expander(label="Central heating and presence of technologies", icon="🔋"):
         create_central_heating_and_tech_expander()
+
 
 def create_daily_consumption_tab():
     """
@@ -477,6 +481,7 @@ def create_daily_consumption_tab():
                 chart_season_gas += chart_gas_summer
         st.altair_chart(chart_season_gas, use_container_width=True)
 
+
 def overview_results_page():
     """
     This function will setup the 'Explore the results' page for the energy-use profiles explorer dashboard.
@@ -504,20 +509,19 @@ def overview_results_page():
     # Overview tab
     with overview_tab:
         create_overview_tab()
-        
+
     # Distribution of households tab
     with distribution_tab:
         create_distribution_tab()
-        
+
     # Annual energy consumption averages tab
     with annual_consumption_tab:
         create_annual_consumption_tab()
-        
+
     # Daily energy consumption profiles tab
     with daily_consumption_tab:
         create_daily_consumption_tab()
-        
+
     # Contextual information tab
     with context_tab:
         create_context_tab()
-        
