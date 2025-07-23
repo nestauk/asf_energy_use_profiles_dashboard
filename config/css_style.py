@@ -24,22 +24,10 @@ def set_css_style():
             font-style: normal;
         }
 
-        /* Apply font everywhere */
-        html, body, .stApp, [class*="css"] {
-            font-family: 'Averta', sans-serif !important;
-        }
-
-        /* Force markdown text to use Averta */
-        .stMarkdown p,
-        .stMarkdown li,
-        .stMarkdown span,
-        .stMarkdown div {
-            font-family: 'Averta', sans-serif !important;
-        }
         /* Apply Averta font globally to all Streamlit UI elements */
-        html, body, .stApp, .css-1d391kg, .css-1offfwp, .css-1v0mbdj, .css-1outpf7, .css-1lcbmhc,
-        .stButton button, .stMetric, .stMarkdown, .stTextInput>div>div>input, .stNumberInput>div>div>input,
-        .stSelectbox>div>div>div>div, .stSidebar, .stHeader, h1, h2, h3, h4, h5, h6, label, span, div {
+        html, body, .stApp, .stMarkdown,
+        .stButton button, .stMetric, .stMarkdown, .stTextInput, .stNumberInput,
+        .stSelectbox, .stSidebar, .stHeader, h1, h2, h3, h4, h5, h6, label, span, div {
             font-family: 'Averta', sans-serif !important;
         }
 
