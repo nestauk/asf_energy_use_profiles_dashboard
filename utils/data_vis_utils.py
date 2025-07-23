@@ -277,7 +277,7 @@ def create_chart_average_annual_consumption(
         energy_type (str): Type of energy ('electricity' or 'gas').
 
     Returns:
-        alt.Chart: Altair chart object.
+        alt.Chart: Altair chart object showing the average annual energy consumption per profile.
     """
     data = profile_annual_avgs.copy()
 
@@ -304,7 +304,20 @@ def create_chart_average_annual_consumption(
     return chart
 
 
-def plot_contextual_info(data: pd.DataFrame, variable, title):
+def plot_contextual_info(data: pd.DataFrame, variable: str, title: str) -> alt.Chart:
+    """
+    Creates a bar chart comparing the proportion of households with a specific
+    characteristic across different profiles.
+    It also adds a horizontal dashed line indicating the average value in the population.
+
+    Args:
+        data (pd.DataFrame): contextual data
+        variable (str): conrextual variable to plot (e.g. "income") withtout "counts_" or "proportion_" prefix
+        title (str): title of the chart
+
+    Returns:
+        alt.Chart: An Altair chart object showing the proportion of households with the specified characteristic
+    """
 
     # select only contextual information about profiles by select numbers only
     # (when there are low counts for a number of profiles, contextual information
