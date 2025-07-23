@@ -19,7 +19,7 @@ mapping_profiles_to_colours = pd.DataFrame(
 )
 
 
-def creat_chart_comparing_daily_consumption_summer_winter(
+def create_chart_comparing_daily_consumption_summer_winter(
     daily_data_summer: pd.DataFrame,
     daily_data_winter: pd.DataFrame,
     profile: int,
