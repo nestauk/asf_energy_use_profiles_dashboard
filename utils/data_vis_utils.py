@@ -12,7 +12,10 @@ from config import configs
 
 # Define a mapping of profiles to colours for use in charts
 mapping_profiles_to_colours = pd.DataFrame(
-    {"profile": configs.profile_numbers, "color": NESTA_COLOURS[:len(configs.profile_numbers)]}
+    {
+        "profile": configs.profile_numbers,
+        "color": NESTA_COLOURS[: len(configs.profile_numbers)],
+    }
 )
 
 
@@ -109,7 +112,11 @@ def create_chart_daily_consumption(
             color=alt.value(colour),
             tooltip=[
                 alt.Tooltip("read_time:O", title="Half hour"),
-                alt.Tooltip(f"{profile_col}_avg:Q", title="Average daily profile consumption", format=".0f"),
+                alt.Tooltip(
+                    f"{profile_col}_avg:Q",
+                    title="Average daily profile consumption",
+                    format=".0f",
+                ),
             ],
         )
     )
@@ -124,9 +131,7 @@ def create_chart_daily_consumption(
         daily_data[profile_col + "_avg"] + daily_data[profile_col + "_std"]
     )
     # Ensure y_min is not negative (as there is no negative consumption)
-    daily_data["y_min"] = daily_data["y_min"].clip(
-        lower=0
-    )  
+    daily_data["y_min"] = daily_data["y_min"].clip(lower=0)
 
     # If std_band is True, we plot the error band around the mean line
     if std_band:
@@ -156,10 +161,11 @@ def create_chart_daily_consumption(
 
     return final_chart
 
+
 def create_chart_daily_consumption_multiple_profiles(
     daily_data: pd.DataFrame, profiles: list, energy_type: str, season: str = ""
 ) -> alt.Chart:
-    
+
     data = daily_data.copy()
 
     # Using melt to reshape the DataFrame to have only one column for consumption and a separate
@@ -167,12 +173,12 @@ def create_chart_daily_consumption_multiple_profiles(
     data = data.melt(
         id_vars=["read_time"],
         value_vars=[f"profile_{profile}_avg" for profile in profiles],
-        var_name="Profile",
+        var_name="profile",
         value_name="consumption",
     )
 
     # Creating a column with 'Profile X' for each profile
-    data["profile"] = data["profile"].split("_")[1].astype(int)
+    data["profile"] = data["profile"].apply(lambda x: int(x.split("_")[1]))
 
     data.sort_values(by="profile", inplace=True)
 
@@ -184,20 +190,21 @@ def create_chart_daily_consumption_multiple_profiles(
     # If the energy type is gas, we remove profiles with low number of gas household
     if energy_type == "gas":
         data = data[~data["profile"].isin(configs.households_low_gas_count)]
-        colors = [c for c in colors if c not in NESTA_COLOURS[j-1] for j in configs.households_low_gas_count]
+        colors_to_remove = [
+            NESTA_COLOURS[j - 1] for j in configs.households_low_gas_count
+        ]
+        colors = [c for c in colors if c not in colors_to_remove]
 
     # If the season is not specified or is summer, we use a solid line
     if season == "" or season == "summer":
         chart = alt.Chart(data).mark_line()
-    else: # Dashed line for Winter
-        chart = alt.Chart(data).mark_line(strokeDash=[5, 5])  
+    else:  # Dashed line for Winter
+        chart = alt.Chart(data).mark_line(strokeDash=[5, 5])
 
     chart = chart.encode(
         x=alt.X("read_time:O", title=""),
         y=alt.Y("consumption:Q", title=f"{energy_type} consumption (in Wh)"),
-        color=alt.Color(
-            "profile:N", title="Profile", scale=alt.Scale(range=colors)
-        ),
+        color=alt.Color("profile:N", title="Profile", scale=alt.Scale(range=colors)),
         tooltip=[
             alt.Tooltip("read_time:O", title="Half hour"),
             alt.Tooltip(
@@ -235,7 +242,7 @@ def plot_distribution_households(
         alt.Chart: Altair chart object.
     """
     title = "Distribution of households by energy-use profile"
-    
+
     y_label = (
         "Number of households" if not as_percentage else "Percentage of households (%)"
     )
@@ -298,7 +305,7 @@ def create_chart_average_annual_consumption(
 
 
 def plot_contextual_info(data: pd.DataFrame, variable, title):
-    
+
     # select only contextual information about profiles by select numbers only
     # (when there are low counts for a number of profiles, contextual information
     # is provided as an aggregate and "profile" might have values such as "All other profiles")
