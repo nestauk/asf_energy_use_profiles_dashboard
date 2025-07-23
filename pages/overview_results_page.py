@@ -511,7 +511,7 @@ def overview_results_page():
         
     # Annual energy consumption averages tab
     with annual_consumption_tab:
-        create_annual_consumption_tab
+        create_annual_consumption_tab()
         
     # Daily energy consumption profiles tab
     with daily_consumption_tab:
