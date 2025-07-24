@@ -149,7 +149,7 @@ def _process_contextual_data(
         if (value not in ["profile", "number_households"]) and (
             value in contextual_data.columns
         ):
-            # Calculate the proportion of each count column relative to the total number of households
+            # Calculate the percentage of each count column relative to the total number of households
             prop_col = f"proportion_{value.split("counts_")[1]}"
             contextual_data[prop_col] = (
                 contextual_data[value] / contextual_data["number_households"] * 100
