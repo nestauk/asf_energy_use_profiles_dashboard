@@ -149,7 +149,7 @@ def _process_contextual_data(
         if (value not in ["profile", "number_households"]) and (
             value in contextual_data.columns
         ):
-            # Calculate the proportion of each count column relative to the total number of households
+            # Calculate the percentage of each count column relative to the total number of households
             prop_col = f"proportion_{value.split("counts_")[1]}"
             contextual_data[prop_col] = (
                 contextual_data[value] / contextual_data["number_households"] * 100
@@ -352,7 +352,7 @@ def process_contextual_info_property_built_year() -> pd.DataFrame:
 
 def process_contextual_info_property_type_detached() -> pd.DataFrame:
     """
-    Processes the property type contextual data based on the specified name.
+    Processes detached property type contextual data.
 
     Returns:
         pd.DataFrame: A DataFrame containing the processed property type contextual data.
@@ -373,7 +373,7 @@ def process_contextual_info_property_type_detached() -> pd.DataFrame:
 
 def process_contextual_info_property_type_flats() -> pd.DataFrame:
     """
-    Processes the property type contextual data based on the specified name.
+    Processes flats property type contextual data.
 
     Returns:
         pd.DataFrame: A DataFrame containing the processed property type contextual data.
