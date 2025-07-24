@@ -5,6 +5,7 @@ Utility functions for visualising data in the dashboard.
 ## Package imports
 import pandas as pd
 import altair as alt
+import numpy as np
 
 # Local imports
 from config.fonts_setup import NESTA_COLOURS
@@ -189,9 +190,9 @@ def create_chart_daily_consumption_multiple_profiles(
 
     # If the energy type is gas, we remove profiles with low number of gas household
     if energy_type == "gas":
-        data = data[~data["profile"].isin(configs.households_low_gas_count)]
+        data = data[~data["profile"].isin(configs.profiles_low_gas_count)]
         colors_to_remove = [
-            NESTA_COLOURS[j - 1] for j in configs.households_low_gas_count
+            NESTA_COLOURS[j - 1] for j in configs.profiles_low_gas_count
         ]
         colors = [c for c in colors if c not in colors_to_remove]
 
@@ -258,7 +259,7 @@ def plot_distribution_households(
             color=alt.value(NESTA_COLOURS[0]),
             tooltip=[
                 alt.Tooltip("profile:O", title="Profile"),
-                alt.Tooltip(f"{y_var}:Q", title=y_label),
+                alt.Tooltip(f"{y_var}:Q", title=y_label, format=".0f"),
             ],
         )
         .properties(width=600, height=400)
@@ -285,7 +286,7 @@ def create_chart_average_annual_consumption(
     title = f"Average annual {energy_type} consumption (kWh)"
 
     if energy_type == "gas":
-        data = data[~data["profile"].isin(configs.households_low_gas_count)]
+        data = data[~data["profile"].isin(configs.profiles_low_gas_count)]
 
     chart = (
         alt.Chart(data, title=alt.TitleParams(text=title, anchor="middle"))
@@ -358,4 +359,72 @@ def plot_contextual_info(data: pd.DataFrame, variable: str, title: str) -> alt.C
             alt.Tooltip("avg_population:Q", title="Population average", format=".2f")
         ],
     )
+    return chart
+
+
+def setup_coloured_bars(
+    min_val: float, max_val: float, value: float, energy_type: str
+) -> alt.Chart:
+    """
+    Creates a vertical gradient bar chart with a marker for a specific value.
+    The gradient bar represents a range of values from min_val to max_val,
+    with a fixed step size of 2000.
+    The marker indicates the specific value within this range.
+    Args:
+        min_val (float): Minimum value for the gradient bar.
+        max_val (float): Maximum value for the gradient bar.
+        value (float): Specific value to be marked on the gradient bar.
+        energy_type (str): Type of energy ('Electricity' or 'Gas').
+
+    Returns:
+        alt.Chart: An Altair chart object showing the vertical gradient bar with a marker.
+    """
+    # presenting rounded values
+    value = int(round(value, 0))
+
+    step = 2000
+    min_val = min_val - step  # Start one step below the minimum
+    max_val = max_val + step  # End one step above the maximum
+    min_val = max(min_val, 0)  # Ensure we don't start below 0
+
+    # Generate y values with fixed step
+    y_vals = np.round(np.arange(min_val, max_val + step, step), 1)
+
+    gradient_data = pd.DataFrame(
+        {"y": y_vals, "color_value": np.linspace(0, 1, len(y_vals))}
+    )
+
+    gradient = (
+        alt.Chart(gradient_data)
+        .mark_rect()
+        .encode(
+            y=alt.Y(
+                "y:Q",
+                scale=alt.Scale(domain=[min_val, max_val]),
+                axis=alt.Axis(title=f"{energy_type} Consumption"),
+            ),
+            y2=alt.Y2("y2:Q"),
+            x=alt.value(0),
+            x2=alt.value(20),
+            color=alt.Color(
+                "color_value:Q",
+                scale=alt.Scale(domain=[0, 1], range=["green", "red"]),
+                legend=None,
+            ),
+            tooltip=[alt.Tooltip("y:Q", title="Consumption Level")],
+        )
+        .transform_calculate(y2=f"datum.y + {step}")
+        .properties(width=30, height=250)
+    )
+
+    marker = (
+        alt.Chart(pd.DataFrame({"y": [value]}))
+        .mark_point(color="black", size=50, shape="circle")
+        .encode(
+            y=alt.Y("y:Q", scale=alt.Scale(domain=[min_val, max_val])), x=alt.value(10)
+        )
+    )
+
+    chart = gradient + marker
+
     return chart
