@@ -319,11 +319,13 @@ def plot_contextual_info(data: pd.DataFrame, variable: str, title: str) -> alt.C
     Returns:
         alt.Chart: An Altair chart object showing the proportion of households with the specified characteristic
     """
+    # In the contextual info df, the profile is stored as a string
+    profiles_as_strings = [str(p) for p in configs.profile_numbers]
 
     # select only contextual information about profiles by select numbers only
     # (when there are low counts for a number of profiles, contextual information
     # is provided as an aggregate and "profile" might have values such as "All other profiles")
-    profiles_specific_data = data[data["profile"].isin(configs.profile_numbers)]
+    profiles_specific_data = data[data["profile"].isin(profiles_as_strings)]
 
     # creating barchart with a bar for each profile
     chart = (

@@ -18,6 +18,7 @@ def check_if_value_exists(df: pd.DataFrame, profile: int, col: str) -> bool:
     Returns:
         bool: True if the value is non-missing, False otherwise
     """
+    profile = str(profile)    
     if pd.isnull(df[df["profile"] == profile][col].iloc[0]):
         return False
     return True
@@ -46,6 +47,9 @@ def get_value_and_delta(profile: int, df: pd.DataFrame, col: str) -> tuple:
     Returns:
         tuple: value and delta as strings
     """
+    # In the contextual info df, the profile is stored as a string
+    profile = str(profile)
+
     profile_filt = df[df["profile"] == profile].iloc[0]
     value = profile_filt["proportion_" + col]
     diff = value - get_avg_population_value(df, col)
