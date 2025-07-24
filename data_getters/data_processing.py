@@ -288,7 +288,7 @@ def process_contextual_info_income(name: str) -> pd.DataFrame:
 
     Args:
         name (str): The name of the income category to process.
-
+            Takes the following values "income", "income_over_90k", "income_up_to_30k".
     Returns:
         pd.DataFrame: A DataFrame containing the processed income contextual data.
     """
