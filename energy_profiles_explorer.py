@@ -32,13 +32,17 @@ alt.themes.register("nestafont", nestafont)
 alt.themes.enable("nestafont")
 set_css_style()
 
+# Get the current directory to load images and other resources
+current_dir = os.getcwd()
 
-def set_up_sidebar():
+
+def set_up_sidebar(nesta_logo):
     """
     This function sets up the sidebar with a menu for navigating the app.
     """
     side_bar_options = option_menu(
         menu_title="Energy-use profiles explorer",
+        menu_icon="lightning-charge",  # Icon for the sidebar menu
         options=[
             "About the explorer",
             "Explore the results",
@@ -50,7 +54,7 @@ def set_up_sidebar():
             "bar-chart",
             "toggles",
             "info-circle",
-        ],  # The icons to be displayed next to the options. You can select from: https://icons.getbootstrap.com/
+        ],  # These are the icons to be displayed next to the options. You can select from: https://icons.getbootstrap.com/
         default_index=0,  # Defaults to the "About this app" page
         orientation="vertical",
         styles={
@@ -77,8 +81,8 @@ def energy_profiles_explorer():
     """
 
     with st.spinner("Loading the Energy-use profiles explorer..."):
-        current_dir = os.getcwd()
         favicon = Image.open(f"{current_dir}/images/nesta_favicon.png")
+        nesta_logo = Image.open(f"{current_dir}/images/nesta_logo.png")
         # Configure your browser tab by adding a title, changing the layout, and adding an icon to appear on your browser tab
         st.set_page_config(
             page_title="Energy-use profiles",
@@ -87,9 +91,10 @@ def energy_profiles_explorer():
         )
 
         with st.sidebar:
-            side_bar_options = set_up_sidebar()
+
+            side_bar_options = set_up_sidebar(nesta_logo)
+
         if side_bar_options == "About the explorer":
-            nesta_logo = Image.open(f"{current_dir}/images/nesta_logo.png")
             st.image(nesta_logo, width=200)
             about_dashboard_page()
         elif side_bar_options == "Explore the results":
