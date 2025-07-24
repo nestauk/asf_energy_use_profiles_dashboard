@@ -630,7 +630,10 @@ def process_contextual_information():
 
         # Merge the data
         contextual_data = pd.merge(
-            contextual_data, df, on=["profile", "number_households"], how="outer"
+            contextual_data,
+            df.drop(columns="number_households"),
+            on=["profile"],
+            how="outer",
         )
 
     contextual_data.to_csv(
