@@ -5,6 +5,7 @@ This script only needs to be run once to generate the required CSV files, by doi
 python data_getters/data_processing.py
 """
 
+import numpy as np
 import pandas as pd
 import os
 import logging
@@ -616,8 +617,20 @@ def process_contextual_information():
     ]
 
     for df in all_other_data:
+        # Remove the "All clusters" lines, as we don't need them
+        contextual_data = contextual_data[contextual_data["profile"] != "All clusters"]
+
+        # Ensure the number of households is NaN for the "Count of other clusters" profile
+        # Since we already have the number of households in the numbered profiles
+        contextual_data["number_households"] = np.where(
+            contextual_data["profile"] == "Count of other clusters",
+            np.nan,
+            contextual_data["number_households"],
+        )
+
+        # Merge the data
         contextual_data = pd.merge(
-            contextual_data, df, on=["profile", "number_households"], how="left"
+            contextual_data, df, on=["profile", "number_households"], how="outer"
         )
 
     contextual_data.to_csv(
