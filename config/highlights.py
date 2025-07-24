@@ -3,14 +3,14 @@ Profile specific manually curated highlights.
 """
 
 highlights = {
-    1: "This profile reflects the highest number of households (25%). This is also the oldest group with 40% aged 65+ only, and a great % not on work. Across other characteristics, households in profile 1 are average.",
-    2: "Profile 2 has the lowest electricity consumption, and has the greatest number of social housing tenants. This profile sees the gretest proportion of single occupancy households, and the least with children.",
-    3: "Profile 3 has second highest electricity usage, and the highest proportion of households where everyone is in work, education, or training.",
-    4: "",
-    5: "",
-    6: "",
-    7: "",
-    8: "",
-    9: "",
-    10: "",
+    1: "reflects the highest proportion of the population (25% of households). This is also the oldest group with 40% of households having all occupants aged 65+, and a great percentage not on work. Across other characteristics, households in profile 1 are average.",
+    2: "has the annual lowest electricity and gas consumption, and has the greatest number of social housing tenants. This profile sees the gretest proportion of single occupancy households, and the least with children.",
+    3: "has second annual lowest electricity and gas usage, and the highest proportion of households where everyone is at work or studying.",
+    4: "has the second highest annual gas consumption. 36% are 65+ only households and 50% live in detached propertiles, with a higher than average proportion of properties built before 1930.",
+    5: "consists of a higher than average proportion of households with adults and children (at least 38%), and over 50% of households with 3 or more occupants. 6% have air conditioning units. 27% have smart heating controls.",
+    6: "this profile is mostly average across all characteristics.",
+    7: "Most households in profile 7 don’t consume gas. hile most electricity consumption profiles show a morning increase and an evening peak, profiles 10 exhibits particularly distinct trimodal peaks throughout the day. This profile has the highest proportion of renters (at least 30%) and highest proportion of flats (at leat 40%). At least 11% have solar panels, 8% have battery storage and 6% have heat pumps.",
+    8: "has the highest annual gas consumption of all profiles. This profile has the highest percentage of high-income households (at least 20% earn more than £90K per year). They tend to be larger households (over 50% have three or more occupants). This profile has the highest proportion of houses in Greater London, 23%. Over 40% live in properties built before 1930 and over 50% are detached. 32% have smart heating controls.",
+    9: "is the second smalest profile (3% of households) and has the second highest electricity consumption. This is the group of 'overnight electricity consumers': this group's consumption peaks overnight, likely driven by electric vehicle ownership (over 60% own an EV) and battery storage (at least 8%). These are affluent (at least 15% earn £90K or more), high-tech households, with many owning solar panels (over 21%), air conditioning (over 10%) and smart heating controls (highest proportion of 44%). They tend to be larger families (over 64% have three or more occupants) residing in detached properties (over 50%).",
+    10: "reflects the smallest proportion of the population (2% of households) and has the highest electricity consumption of all profiles with most households being off-gas. While most electricity consumption profiles show a morning increase and an evening peak, profiles 10 exhibits particularly distinct trimodal peaks throughout the day. A higher than average proportion of households (at least 12%) earn more than £90K per year and over 50% live in detached houses. These are tech affluent households where 32% have a heat pump, 22% have electric vehicles, 22% have solar panels and 10% have air conditioning. ",
 }

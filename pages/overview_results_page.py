@@ -76,7 +76,7 @@ def create_overview_tab():
 
     st.markdown("### 💡 Key findings")
     for key, value in highlights.items():
-        st.markdown(f"Profile {key}: {value}\n")
+        st.markdown(f"Profile {key} {value}\n")
 
 
 def create_distribution_tab():
@@ -465,7 +465,7 @@ Off-gas homes are primarily found in profiles {off_gas_prof}. Due to the minimal
 
     # Create a multiselect widget to select seasons to display on the right hand side, defaulting to "Winter"
     season_options = st.multiselect(
-        "Select seasons to display (will only change seasonal plots on the right hand side)",
+        "Select seasons to display (will only change seasonal plots on the right hand side). Winter is presented with dashed lines.",
         options=["Winter", "Summer"],
         default=["Winter"],
     )

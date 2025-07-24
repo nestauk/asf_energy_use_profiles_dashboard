@@ -77,7 +77,7 @@ def initial_setup() -> int:
 
     # Provide a paragraph with some highlights about this profile
     st.markdown(
-        f"##### Overview of profile {profile_selector}: " + highlights[profile_selector]
+        f"##### Overview: profile {profile_selector} " + highlights[profile_selector]
     )
     return profile_selector
 
