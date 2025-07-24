@@ -7,6 +7,8 @@ The main function is select_profile_page() which sets up the page.
 ## Package imports
 import streamlit as st
 import altair as alt
+import pandas as pd
+import numpy as np
 
 # Local imports
 from config.fonts_setup import nestafont, NESTA_COLOURS
@@ -15,6 +17,7 @@ from getters import data_getters as dg
 from utils.data_vis_utils import (
     create_chart_daily_consumption,
     create_chart_comparing_daily_consumption_summer_winter,
+    setup_coloured_bars,
 )
 from utils.data_handling_utils import (
     check_if_value_exists,
@@ -95,9 +98,7 @@ def setup_profile_main_metrics(profile_selector: int):
         distribution_households["profile"] == profile_selector
     ].iloc[0]
 
-    n_households, perc_households, avg_annual_elc, avg_annual_gas = st.columns(
-        (1, 1, 1, 1)
-    )
+    col_1, n_households, perc_households, col_2 = st.columns(4)
 
     n_households.metric(
         label="Number of households",
@@ -114,6 +115,7 @@ def setup_profile_main_metrics(profile_selector: int):
         profile_annual_avgs["profile"] == profile_selector
     ].iloc[0]
 
+    col_3, avg_annual_elc, col_4 = st.columns(3)
     avg_annual_elc.metric(
         label="Average annual electricity consumption",
         value=str(
@@ -124,15 +126,48 @@ def setup_profile_main_metrics(profile_selector: int):
         + " kWh",
         border=True,
     )
+    if profile_selector not in configs.profiles_low_gas_count:
+        col_5, avg_annual_gas, col_6 = st.columns(3)
 
-    avg_annual_gas.metric(
-        label="Average annual gas consumption",
-        value=str(
-            int(profile_annual_avgs_filtered["avg_annual_gas_consumption_kWh"].round(0))
+        avg_annual_gas.metric(
+            label="Average annual gas consumption",
+            value=str(
+                int(
+                    profile_annual_avgs_filtered[
+                        "avg_annual_gas_consumption_kWh"
+                    ].round(0)
+                )
+            )
+            + " kWh",
+            border=True,
         )
-        + " kWh",
-        border=True,
-    )
+
+    with st.sidebar:
+        st.markdown("Profile consumption values in comparison")
+        elec_color, gas_color = st.columns(2)
+
+        with elec_color:
+            elec_color_chart = setup_coloured_bars(
+                min_val=profile_annual_avgs["avg_annual_elec_consumption_kWh"].min(),
+                max_val=profile_annual_avgs["avg_annual_elec_consumption_kWh"].max(),
+                value=profile_annual_avgs[
+                    profile_annual_avgs["profile"] == profile_selector
+                ]["avg_annual_elec_consumption_kWh"].iloc[0],
+                energy_type="Electricity",
+            )
+            st.altair_chart(elec_color_chart, use_container_width=True)
+
+        if profile_selector not in configs.profiles_low_gas_count:
+            with gas_color:
+                gas_color_chart = setup_coloured_bars(
+                    min_val=profile_annual_avgs["avg_annual_gas_consumption_kWh"].min(),
+                    max_val=profile_annual_avgs["avg_annual_gas_consumption_kWh"].max(),
+                    value=profile_annual_avgs[
+                        profile_annual_avgs["profile"] == profile_selector
+                    ]["avg_annual_gas_consumption_kWh"].iloc[0],
+                    energy_type="Gas",
+                )
+                st.altair_chart(gas_color_chart, use_container_width=True)
 
 
 def setup_daily_consumption_charts(profile_selector: int):
@@ -143,18 +178,9 @@ def setup_daily_consumption_charts(profile_selector: int):
     Args:
         profile_selector (int): profile number selected by the user.
     """
-    elec_col, gas_col = st.columns(2)
-
-    with elec_col:
-        final_chart = create_chart_daily_consumption(
-            daily_data=elec_hh_data,
-            profile=profile_selector,
-            energy_type="electricity",
-            colour=NESTA_COLOURS[0],
-        )
-        st.altair_chart(final_chart, use_container_width=True)
-
     if profile_selector not in configs.profiles_low_gas_count:
+        elec_col, gas_col = st.columns(2)
+
         with gas_col:
             final_chart = create_chart_daily_consumption(
                 daily_data=gas_hh_data,
@@ -164,9 +190,24 @@ def setup_daily_consumption_charts(profile_selector: int):
             )
             st.altair_chart(final_chart, use_container_width=True)
 
-    st.markdown(
-        "Note that, although graphs are side by side, the range of consumption values might be different for electricity and gas (see y-axis values)."
-    )
+        st.markdown(
+            "Note that, although graphs are side by side, the range of consumption values might be different for electricity and gas (see y-axis values)."
+        )
+    else:
+        col_1, elec_col, col_2 = st.columns((1, 2, 1))
+
+        st.markdown(
+            "Due to the minimal number of on-gas households in this profiles, gas consumption information isn't provided as it wouldn't accurately represent this group."
+        )
+
+    with elec_col:
+        final_chart = create_chart_daily_consumption(
+            daily_data=elec_hh_data,
+            profile=profile_selector,
+            energy_type="electricity",
+            colour=NESTA_COLOURS[0],
+        )
+        st.altair_chart(final_chart, use_container_width=True)
 
 
 def setup_seasonal_patterns_expander(profile_selector: int):
