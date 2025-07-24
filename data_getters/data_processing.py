@@ -352,7 +352,7 @@ def process_contextual_info_property_built_year() -> pd.DataFrame:
 
 def process_contextual_info_property_type_detached() -> pd.DataFrame:
     """
-    Processes the property type contextual data based on the specified name.
+    Processes detached property type contextual data.
 
     Returns:
         pd.DataFrame: A DataFrame containing the processed property type contextual data.
