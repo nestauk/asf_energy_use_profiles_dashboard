@@ -43,6 +43,9 @@ gas_hh_data_winter = dg.get_hh_consumption_per_profile(
 )
 contextual_data = dg.get_contextual_information()
 
+# creates string with "X and Y" where X and Y are the profiles with low gas consumption
+off_gas_prof = " and ".join(map(str, configs.profiles_low_gas_count))
+
 
 def create_overview_tab():
     """
@@ -51,15 +54,27 @@ def create_overview_tab():
     st.write("'Explore the results' is organised into the following main sections:")
     st.markdown(
         """
-                - **Overview:** provides key findings from the analysis of the energy-use profiles.
-                - **Distribution of households:** shows the distribution of households across different energy-use profiles, allowing you to see how many households fall into each profile.
-                - **Annual energy consumption averages:** displays the average annual electricity and gas consumption for each energy-use profile.
-                - **Daily energy consumption profiles:** provides detailed daily energy consumption profiles for selected energy-use profiles, allowing you to see how energy consumption varies throughout the day on average (and in different seasons).
-                - **Contextual information:** provides additional information about the households in each energy-use profile, including household composition, income, and property type.
+                ##### Overview
+                Provides key findings from the analysis of the energy-use profiles.
+
+                ##### Distribution of households
+                Shows the distribution of households across different energy-use profiles, allowing you to see how many households fall into each profile.
+
+                ##### Annual energy consumption averages
+                Displays the average annual electricity and gas consumption for each energy-use profile.
+
+                ##### Daily energy consumption profiles
+                Provides detailed daily energy consumption profiles for selected energy-use profiles, allowing you to see how energy consumption varies throughout the day on average (and in different seasons).
+
+                ##### Contextual information
+                Provides additional information about the households in each energy-use profile, including household composition, income, and property type.
+
+                -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
                 """
     )
 
-    st.markdown("## Key findings")
+    st.markdown("### 💡 Key findings")
     for key, value in highlights.items():
         st.markdown(f"Profile {key}: {value}\n")
 
@@ -68,12 +83,12 @@ def create_distribution_tab():
     """
     Creates the distribution tab for the 'Explore the results' page.
     """
-    st.markdown("## Distribution of households by energy-use profile")
+    st.markdown("## 📊 Distribution of households by energy-use profile")
 
     # Creating a toggle to switch between percentage and number of households
     switch_to_count = st.toggle(
         "Switch on to show number of households (as default it shows percentage of households)",
-        key="switch_perc",
+        key="switch_to_count",
     )
 
     # Plotting distribution of households in the center of the page by setting it in the middle column
@@ -91,12 +106,45 @@ def create_distribution_tab():
             )
             st.altair_chart(num_chart, use_container_width=False)
 
+    # Coding numbers that appear in the following paragraph, rather hardcoding
+    max_count = distribution_households["number_of_households"].max()
+    min_count = distribution_households["number_of_households"].min()
+    max_perc = int(round(distribution_households["perc_of_households"].max()))
+    min_perc = int(round(distribution_households["perc_of_households"].min()))
+
+    st.markdown(
+        f"""
+                Results show that households are not evenly distributed, reflecting that different proportions of the population have different energy consumption behaviours.
+                The biggest profile covers {max_count} ({max_perc}% of) households, while the smallest one covers {min_count} ({min_perc}% of) households.
+Most households in profiles {off_gas_prof} don’t consume gas, while most of the other profiles have households that cook or heat their home with gas.
+
+                """
+    )
+
+    st.markdown(
+        """
+                Households in the Smart Energy Research Lab Observatory Data constitute a representative sample of households with respect to region and income decile.
+                The sample in analysis in this dashboard was selected to be representative of the population for region and index of multiple deprivation (as income deciles are not made available).
+                """
+    )
+
 
 def create_annual_consumption_tab():
     """
     Creates the annual energy consumption averages tab for the 'Explore the results' page.
     """
-    st.markdown("## 📊 Annual energy consumption averages")
+    st.markdown("## 🔋 Average annual energy consumption")
+
+    st.markdown(
+        f"""
+                The charts below show the average annual electricity and gas consumption for each energy-use profile. It is crucial to note that these values represent a mean across all households within each profile, but variation exists at the individual household level.
+
+                The data shows that consumption varies quite substantially by energy-use profile. These consumption disparities are partly influenced by household composition. While all profiles include a mix of single, double, and larger occupancy homes, the distribution of household occupancy within each profile isn't uniform. You can explore these differences in the contextual information section of the dashboard.
+
+                Off-gas homes are primarily found in profiles {off_gas_prof}. Due to the minimal number of on-gas households in these profiles, average annual gas consumption isn't provided as it wouldn't accurately represent these groups.
+
+    """
+    )
 
     # Show barchart with average annual electricity for each energy-use profile in the center of the page
     col3, elec_annual_col, col4 = st.columns([1, 3, 1])
@@ -234,7 +282,7 @@ def create_property_information_expander():
     """
     Creates an expander for property information in the context tab.
     """
-    st.markdown("#### 🏙️ Region and IMD")
+    st.markdown("#### 🏙️ Region and Index of Multiple Deprivation (IMD)")
     # IMD and region (London is the only one we have data for)
     imd_1_2_col, imd_3_col, imd_4_5_col, london_col = st.columns((1, 1, 1, 1))
     with imd_1_2_col:
@@ -371,6 +419,14 @@ def create_central_heating_and_tech_expander():
 def create_context_tab():
     st.markdown("## 📄 Contextual information")
 
+    st.markdown(
+        """
+        This section highlights differences between energy-use profiles across a variety of characteristics, including household composition, income, property type and age, central heating fuel type, and presence of technologies.
+
+        The information is presented as bar plots, where each bar represents one energy-use profiles. When a bar is missing, it means the data count for that profile was too low to be shown due to statistical disclosure rules. The line in yellow indicates the average for the population, which is calculated across all households.
+        """
+    )
+
     # Create an expander for household information
     with st.expander(label="Household information", icon="👨‍👩‍👧‍👦"):
         create_household_information_expander()
@@ -388,12 +444,21 @@ def create_daily_consumption_tab():
     """
     Creates the daily energy consumption profiles tab for the 'Explore the results' page.
     """
+    st.markdown("## 💡 Daily average energy consumption")
+    st.markdown(
+        f"""Select a number of energy-use profiles and see how they compare in terms of daily average electricity and gas consumption (on the left hand side).
+    You can also select seasons to see how consumption changes in different seasons (on the right hand side).
+
+Off-gas homes are primarily found in profiles {off_gas_prof}. Due to the minimal number of on-gas households in these profiles, daily average gas consumption isn't provided as it wouldn't accurately represent these groups.
+                """
+    )
+
     # List of profiles in the format "Profile X" where X is the profile number
     profiles = [f"Profile {i}" for i in configs.profile_numbers]
 
     # Create a multiselect widget to select profiles to display, defaulting to a few profiles
     options = st.multiselect(
-        "Select profiles to display",
+        "Select (or de-select) energy-use profiles to display",
         options=profiles,
         default=["Profile 2", "Profile 3", "Profile 6", "Profile 9"],
     )
@@ -410,7 +475,7 @@ def create_daily_consumption_tab():
     daily_col, seasonal_daily_col = st.columns([1, 1])
 
     with daily_col:
-        st.markdown("### 📊 Daily energy consumption profiles")
+        st.markdown("### 📅 Daily average energy consumption")
 
         profile_numbers = [int(profile.split(" ")[1]) for profile in options]
 
@@ -431,7 +496,7 @@ def create_daily_consumption_tab():
         st.altair_chart(chart_daily_gas, use_container_width=True)
 
     with seasonal_daily_col:
-        st.markdown("### 📅 Seasonal daily energy consumption profiles")
+        st.markdown("### ❄️☀️ Seasonal daily average energy consumption")
 
         # Show seasonal daily average electricity consumption profiles for selected profiles
         chart_season_elec = None
@@ -487,7 +552,7 @@ def overview_results_page():
     This function will setup the 'Explore the results' page for the energy-use profiles explorer dashboard.
     """
 
-    st.markdown("# Explore the results")
+    st.markdown("# 🔍 Explore the results")
 
     # The 'Explore the results' page is organised into the following different tabs
     (
@@ -500,8 +565,8 @@ def overview_results_page():
         [
             "Overview",
             "Distribution of households",
-            "Annual energy consumption averages",
-            "Daily energy consumption profiles",
+            "Average annual energy consumption",
+            "Daily average energy consumption",
             "Contextual information",
         ]
     )
