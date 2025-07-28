@@ -229,7 +229,7 @@ def create_household_information_expander():
         chart_working_status_mix = plot_contextual_info(
             data=contextual_data,
             variable="working_status_mix",
-            title="Households with a mix of working and non-working members",
+            title=["Households with a mix of working", "and non-working members"],
         )
         st.altair_chart(chart_working_status_mix, use_container_width=True)
 
