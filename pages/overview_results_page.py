@@ -180,7 +180,7 @@ def create_household_information_expander():
         chart_hc_65p = plot_contextual_info(
             data=contextual_data,
             variable="adults_65_plus_only",
-            title="Households 65+ years old only",
+            title="Households with 65+ year old occupants only",
         )
         st.altair_chart(chart_hc_65p, use_container_width=True)
     with hc_adults_child_col:
