@@ -559,6 +559,48 @@ def process_contextual_info_smart_heating_controls() -> pd.DataFrame:
     return contextual_data
 
 
+def process_contextual_info_epc_c_or_above() -> pd.DataFrame:
+    """
+    Processes the EPC rating contextual data for properties rated C or above.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the processed EPC rating contextual data.
+    """
+    contextual_data = _get_raw_contextual_data("epc_c_above")
+
+    mapping = {
+        "Cluster": "profile",
+        "Total households": "number_households",
+        # EPC rating C or above
+        "EPC C or above": "counts_epc_c_or_above",
+    }
+
+    contextual_data = _process_contextual_data(contextual_data, mapping)
+
+    return contextual_data
+
+
+def process_contextual_info_tariff() -> pd.DataFrame:
+    """
+    Processes the tariff contextual data.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the processed tariff contextual data.
+    """
+    contextual_data = _get_raw_contextual_data("tariff")
+
+    mapping = {
+        "Cluster": "profile",
+        "Total households": "number_households",
+        # Tariff
+        "TOUT": "counts_time_of_use_tariff",
+    }
+
+    contextual_data = _process_contextual_data(contextual_data, mapping)
+
+    return contextual_data
+
+
 def process_contextual_information():
     """
     Processes all contextual information and saves it as a CSV file to S3.
@@ -588,6 +630,8 @@ def process_contextual_information():
     solar_panels = process_contextual_info_solar_panels()
     batery_storage = process_contextual_info_battery_storage()
     smart_heating_controls = process_contextual_info_smart_heating_controls()
+    epc_c_or_above = process_contextual_info_epc_c_or_above()
+    tou_tariff = process_contextual_info_tariff()
 
     all_other_data = [
         region,
@@ -610,6 +654,8 @@ def process_contextual_information():
         solar_panels,
         batery_storage,
         smart_heating_controls,
+        epc_c_or_above,
+        tou_tariff,
     ]
 
     for df in all_other_data:
