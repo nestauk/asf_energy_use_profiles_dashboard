@@ -5,7 +5,7 @@ Profile specific manually curated highlights.
 highlights = {
     1: "reflects the highest proportion of the population (25% of households). This is also the oldest group with 40% of households having all occupants aged 65+, and a great percentage not on work. Across other characteristics, households in profile 1 are average.",
     2: "has the lowest annual electricity and gas consumption, and has the greatest proportion of households in social housing. This profile has the greatest proportion of single occupancy households, and the lowest proportion of households with children.",
-    3: "has second annual lowest electricity and gas usage, and the highest proportion of households where everyone is at work or studying.",
+    3: "has second lowest annual electricity and gas usage, and the highest proportion of households where all adults in the household either work or study.",
     4: "has the second highest annual gas consumption. 36% are 65+ only households and 50% live in detached propertiles, with a higher than average proportion of properties built before 1930.",
     5: "consists of a higher than average proportion of households with adults and children (at least 38%), and over 50% of households with 3 or more occupants. 6% have air conditioning units. 27% have smart heating controls.",
     6: "this profile is mostly average across all characteristics.",
