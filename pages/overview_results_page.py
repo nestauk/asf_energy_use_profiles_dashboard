@@ -301,7 +301,7 @@ def create_property_information_expander():
         chart_imd_4_5 = plot_contextual_info(
             data=contextual_data,
             variable="imd_4_5",
-            title="IMD 4-5 (least deprived)",
+            title="Households in IMD 4-5 (least deprived) areas",
         )
         st.altair_chart(chart_imd_4_5, use_container_width=True)
     with london_col:
