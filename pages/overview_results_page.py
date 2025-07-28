@@ -370,7 +370,7 @@ def create_central_heating_and_tech_expander():
         chart_ac = plot_contextual_info(
             data=contextual_data,
             variable="ac",
-            title="Presence of air conditioning units s",
+            title="Households with air conditioning units",
         )
         st.altair_chart(chart_ac, use_container_width=True)
     with smart_heating_col:
