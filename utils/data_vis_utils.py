@@ -334,7 +334,7 @@ def plot_contextual_info(data: pd.DataFrame, variable: str, title: str) -> alt.C
         )
         .mark_bar()
         .encode(
-            x=alt.X("profile:N", axis=alt.Axis(labelAngle=0)),
+            x=alt.X("profile:N", axis=alt.Axis(labelAngle=0), sort=[str(i) for i in range(1, 11)]),
             y=alt.Y(f"proportion_{variable}:Q", title="Percentage of households (%)"),
             color=alt.value(NESTA_COLOURS[0]),
             tooltip=[
