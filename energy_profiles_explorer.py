@@ -36,7 +36,7 @@ set_css_style()
 current_dir = os.getcwd()
 
 
-def set_up_sidebar(nesta_logo):
+def set_up_sidebar():
     """
     This function sets up the sidebar with a menu for navigating the app.
     """
