@@ -332,7 +332,7 @@ def create_property_information_expander():
         chart_property_flats = plot_contextual_info(
             data=contextual_data,
             variable="property_type_flats_apartments_maisonettes",
-            title="Flats, apartments or maisonettes",
+            title="Households in flats, apartments or maisonettes",
         )
         st.altair_chart(chart_property_flats, use_container_width=True)
 
