@@ -55,6 +55,6 @@ With a larger sample or enhanced synthetic data, we could further refine these p
 
     with st.expander("Inherent bias in data"):
         st.markdown(
-            """The data we have access to comes from houses with smart meters; hence, the data is inherently biased to what we can learn from homes with smart meters. Smart meter coverage is still quite low in GB, with the latest statistics showing the number of installations in the UK reached [66% of homes and small businesses, with 39 million smart and advanced meters in operation across Great Britain](https://assets.publishing.service.gov.uk/media/67d95f7c4ba412c67701ed58/Q4_2024_Smart_Meters_Statistics_Report.pdf) as of the end of 2024.
+            """The data we have access to comes from houses with smart meters; hence, the data is inherently biased to what we can learn from homes with smart meters. A large proportion of households do not have smart meters, with the latest statistics showing the number of installations in the UK reached [66% of homes and small businesses, with 39 million smart and advanced meters in operation across Great Britain](https://assets.publishing.service.gov.uk/media/67d95f7c4ba412c67701ed58/Q4_2024_Smart_Meters_Statistics_Report.pdf) as of the end of 2024.
                     """
         )
