@@ -363,7 +363,7 @@ def create_central_heating_and_tech_expander():
         chart_heat_pump = plot_contextual_info(
             data=contextual_data,
             variable="heat_pumps",
-            title="Presence of heat pumps",
+            title="Households with heat pumps",
         )
         st.altair_chart(chart_heat_pump, use_container_width=True)
     with ac_col:
