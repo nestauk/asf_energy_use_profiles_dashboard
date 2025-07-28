@@ -411,7 +411,7 @@ def create_central_heating_and_tech_expander():
         chart_ev_charging = plot_contextual_info(
             data=contextual_data,
             variable="ev_charging",
-            title="Presence of EV charging points",
+            title="Households with EV charging points",
         )
         st.altair_chart(chart_ev_charging, use_container_width=True)
 
