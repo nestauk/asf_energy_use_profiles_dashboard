@@ -394,7 +394,7 @@ def create_central_heating_and_tech_expander():
         chart_battery_storage = plot_contextual_info(
             data=contextual_data,
             variable="battery_storage",
-            title="Presence of battery storage",
+            title="Households with battery storage",
         )
         st.altair_chart(chart_battery_storage, use_container_width=True)
 
