@@ -215,7 +215,7 @@ def create_household_information_expander():
         chart_working_status = plot_contextual_info(
             data=contextual_data,
             variable="working_status_all_not_working",
-            title="Households where all members are not working",
+            title=["Households where all members", "are not working"],
         )
         st.altair_chart(chart_working_status, use_container_width=True)
     with all_working_or_students_col:
