@@ -258,7 +258,7 @@ def create_household_information_expander():
         chart_privately_rented = plot_contextual_info(
             data=contextual_data,
             variable="privately_rented",
-            title="Rented (private) households",
+            title="Households in private rentals",
         )
         st.altair_chart(chart_privately_rented, use_container_width=True)
     with social_rented_prop_col:
