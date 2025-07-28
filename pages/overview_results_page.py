@@ -377,7 +377,7 @@ def create_central_heating_and_tech_expander():
         chart_smart_heating = plot_contextual_info(
             data=contextual_data,
             variable="smart_heating_controls",
-            title="Presence of smart heating controls",
+            title="Households with smart heating controls",
         )
         st.altair_chart(chart_smart_heating, use_container_width=True)
 
