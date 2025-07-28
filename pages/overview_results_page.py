@@ -265,7 +265,7 @@ def create_household_information_expander():
         chart_social_rented = plot_contextual_info(
             data=contextual_data,
             variable="social_rented",
-            title="Rented (social) households",
+            title="Households in social rentals",
         )
         st.altair_chart(chart_social_rented, use_container_width=True)
 
