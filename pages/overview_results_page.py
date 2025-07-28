@@ -354,7 +354,7 @@ def create_central_heating_and_tech_expander():
         chart_ch_gas = plot_contextual_info(
             data=contextual_data,
             variable="ch_gas_only",
-            title="Gas central heating only",
+            title="Households with gas central heating only",
         )
         st.altair_chart(chart_ch_gas, use_container_width=True)
     st.markdown("#### ❄️ Heat pumps and air conditioning units")
