@@ -294,7 +294,7 @@ def create_property_information_expander():
         st.altair_chart(chart_imd_1_2, use_container_width=True)
     with imd_3_col:
         chart_imd_3 = plot_contextual_info(
-            data=contextual_data, variable="imd_3", title="IMD 3"
+            data=contextual_data, variable="imd_3", title="Households in IMD 3 areas"
         )
         st.altair_chart(chart_imd_3, use_container_width=True)
     with imd_4_5_col:
