@@ -387,7 +387,7 @@ def create_central_heating_and_tech_expander():
         chart_solar_panels = plot_contextual_info(
             data=contextual_data,
             variable="solar_panels",
-            title="Presence of solar panels",
+            title="Households with solar panels",
         )
         st.altair_chart(chart_solar_panels, use_container_width=True)
     with battery_col:
