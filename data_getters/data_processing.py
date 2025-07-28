@@ -303,7 +303,6 @@ def process_contextual_info_income(name: str) -> pd.DataFrame:
         "Up to £30,000": "counts_income_30k_below",
         "£30,000-£90,000": "counts_income_30k_to_90k",
         "Income unknown": "counts_income_unknown",
-        "Unknown": "counts_income_unknown",
     }
 
     contextual_data = _process_contextual_data(contextual_data, mapping)
@@ -311,14 +310,14 @@ def process_contextual_info_income(name: str) -> pd.DataFrame:
     return contextual_data
 
 
-def process_contextual_info_tenure(name) -> pd.DataFrame:
+def process_contextual_info_tenure() -> pd.DataFrame:
     """
     Processes the tenure contextual data.
 
     Returns:
         pd.DataFrame: A DataFrame containing the processed tenure contextual data.
     """
-    contextual_data = _get_raw_contextual_data(name)
+    contextual_data = _get_raw_contextual_data("tenure")
     mapping = {
         "Cluster": "profile",
         "Total households": "number_households",
@@ -326,7 +325,6 @@ def process_contextual_info_tenure(name) -> pd.DataFrame:
         "Rented (private)": "counts_privately_rented",
         "Rented (social)": "counts_social_rented",
         "Owner-occupied, Unknown": "counts_owner_occupier_or_unknown_tenure",
-        "Owner-occupied": "counts_owner_occupier",
     }
     contextual_data = _process_contextual_data(contextual_data, mapping)
     return contextual_data
@@ -578,8 +576,7 @@ def process_contextual_information():
     income = process_contextual_info_income("income")
     income_over_90k = process_contextual_info_income("income_over_90k")
     # income_up_to_30k = process_contextual_info_income("income_up_to_30k")
-    tenure = process_contextual_info_tenure("tenure")
-    owner_occupier = process_contextual_info_tenure("owner_occupier")
+    tenure = process_contextual_info_tenure()
     property_built_year = process_contextual_info_property_built_year()
     property_type_detached = process_contextual_info_property_type_detached()
     property_type_flats = process_contextual_info_property_type_flats()
@@ -602,7 +599,6 @@ def process_contextual_information():
         income_over_90k,
         # income_up_to_30k,
         tenure,
-        owner_occupier,
         property_built_year,
         property_type_detached,
         property_type_flats,
