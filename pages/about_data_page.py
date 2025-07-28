@@ -43,7 +43,7 @@ With a larger sample or enhanced synthetic data, we could further refine these p
         )
     with st.expander("Extracting actionable insights"):
         st.markdown(
-            """Households were clustered using consumption data. Sociodemographic and other contextual information are not well clustered, making it hard to identify ‘true archetypes’ and identify meaningful insight. As an example, wealthy households with solar panels and low-income households might cluster together if both have low electricity consumption (although for different reasons).
+            """Households were clustered using consumption data. Sociodemographic and other contextual information are not well clustered, making it hard to identify ‘true archetypes’. As an example, wealthy households with solar panels and low-income households might cluster together if both have low electricity consumption (although for different reasons).
 """
         )
 
