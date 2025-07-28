@@ -318,7 +318,7 @@ def create_property_information_expander():
         chart_property_age = plot_contextual_info(
             data=contextual_data,
             variable="property_built_before_1930",
-            title="Properties built before 1930",
+            title="Households in properties built before 1930",
         )
         st.altair_chart(chart_property_age, use_container_width=True)
     with detached_col:
