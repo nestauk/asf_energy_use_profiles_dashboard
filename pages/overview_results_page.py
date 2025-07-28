@@ -325,7 +325,7 @@ def create_property_information_expander():
         chart_property_detached = plot_contextual_info(
             data=contextual_data,
             variable="property_type_detached",
-            title="Detached properties",
+            title="Households in detached properties",
         )
         st.altair_chart(chart_property_detached, use_container_width=True)
     with flats_col:
