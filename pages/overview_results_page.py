@@ -347,7 +347,7 @@ def create_central_heating_and_tech_expander():
         chart_ch_electricity = plot_contextual_info(
             data=contextual_data,
             variable="ch_electric_only",
-            title="Electric central heating only",
+            title="Households with electric central heating only",
         )
         st.altair_chart(chart_ch_electricity, use_container_width=True)
     with gas_ch_col:
