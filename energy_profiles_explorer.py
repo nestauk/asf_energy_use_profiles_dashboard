@@ -92,7 +92,7 @@ def energy_profiles_explorer():
 
         with st.sidebar:
 
-            side_bar_options = set_up_sidebar(nesta_logo)
+            side_bar_options = set_up_sidebar()
 
         if side_bar_options == "About the explorer":
             st.image(nesta_logo, width=200)
