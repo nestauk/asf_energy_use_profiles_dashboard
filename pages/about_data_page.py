@@ -49,7 +49,7 @@ With a larger sample or enhanced synthetic data, we could further refine these p
 
     with st.expander("Information gap for low-income and deprived households"):
         st.markdown(
-            """We often have less to say about those on low incomes and in more deprived areas, as they typically don’t have technologies such as heat pumps or solar panels installed in the house.
+            """We often have less to say about profiles with a high proportion of households on low incomes and in more deprived areas, as they typically don’t have technologies such as heat pumps or solar panels installed in the house.
 """
         )
 
