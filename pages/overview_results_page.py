@@ -54,8 +54,8 @@ def create_overview_tab():
     st.write("'Explore the results' is organised into the following main sections:")
     st.markdown(
         """
-                ##### Overview
-                Provides key findings from the analysis of the energy-use profiles.
+                ##### Key findings
+                Provides key findings for each individual energy-use profile, summarising the main characteristics and energy consumption patterns.
 
                 ##### Distribution of households
                 Shows the distribution of households across different energy-use profiles, allowing you to see how many households fall into each profile.
@@ -69,14 +69,28 @@ def create_overview_tab():
                 ##### Contextual information
                 Provides additional information about the households in each energy-use profile, including household composition, income, and property type.
 
-                -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
                 """
     )
 
-    st.markdown("### 💡 Key findings")
+
+def create_key_findings_tab():
+    """
+    Creates the key findings tab for the 'Explore the results' page.
+    """
+    st.markdown("## 📌 Key findings")
+    st.markdown(
+        """
+ This section provides key findings for each individual energy-use profile, summarising the main characteristics and energy consumption patterns.
+______________________________________________
+"""
+    )
     for key, value in highlights.items():
-        st.markdown(f"Profile {key} {value}\n")
+        st.markdown(f"- Profile {key} {value}\n")
+    st.markdown(
+        """
+______________________________________________
+                """
+    )
 
 
 def create_distribution_tab():
@@ -98,13 +112,13 @@ def create_distribution_tab():
             perc_chart = plot_distribution_households(
                 profile_counts=distribution_households, as_percentage=False
             )
-            st.altair_chart(perc_chart, use_container_width=False)
+            st.altair_chart(perc_chart, use_container_width=True)
     else:  # if the switch is off, show percentage of households
         with dist_col:
             num_chart = plot_distribution_households(
                 profile_counts=distribution_households, as_percentage=True
             )
-            st.altair_chart(num_chart, use_container_width=False)
+            st.altair_chart(num_chart, use_container_width=True)
 
     # Coding numbers that appear in the following paragraph, rather hardcoding
     max_count = distribution_households["number_of_households"].max()
@@ -273,7 +287,7 @@ def create_household_information_expander():
         chart_owner_occupiers = plot_contextual_info(
             data=contextual_data,
             variable="owner_occupier_or_unknown_tenure",
-            title="Owner occupiers or unknown tenure households",
+            title=["Owner occupiers or", "unknown tenure households"],
         )
         st.altair_chart(chart_owner_occupiers, use_container_width=True)
 
@@ -284,26 +298,30 @@ def create_property_information_expander():
     """
     st.markdown("#### 🏙️ Region and Index of Multiple Deprivation (IMD)")
     # IMD and region (London is the only one we have data for)
-    imd_1_2_col, imd_3_col, imd_4_5_col, london_col = st.columns((1, 1, 1, 1))
+    imd_1_2_col, imd_3_col, imd_4_5_col = st.columns((1, 1, 1))
     with imd_1_2_col:
         chart_imd_1_2 = plot_contextual_info(
             data=contextual_data,
             variable="imd_1_2",
-            title="Households in IMD 1-2 (most deprived) areas",
+            title=["Households in IMD 1-2", "quintile areas", "(most deprived)"],
         )
         st.altair_chart(chart_imd_1_2, use_container_width=True)
     with imd_3_col:
         chart_imd_3 = plot_contextual_info(
-            data=contextual_data, variable="imd_3", title="Households in IMD 3 areas"
+            data=contextual_data,
+            variable="imd_3",
+            title=["Households in IMD 3", " quintile areas", ""],
         )
         st.altair_chart(chart_imd_3, use_container_width=True)
     with imd_4_5_col:
         chart_imd_4_5 = plot_contextual_info(
             data=contextual_data,
             variable="imd_4_5",
-            title="Households in IMD 4-5 (least deprived) areas",
+            title=["Households in IMD 4-5", "quintile areas", "(least deprived)"],
         )
         st.altair_chart(chart_imd_4_5, use_container_width=True)
+
+    col_1, london_col, col_2 = st.columns((1, 1, 1))
     with london_col:
         chart_london = plot_contextual_info(
             data=contextual_data,
@@ -312,35 +330,35 @@ def create_property_information_expander():
         )
         st.altair_chart(chart_london, use_container_width=True)
 
+    st.markdown(
+        """
+                Note on IMD quintiles: The IMD quintile reflects the deprivation of a geographical area, not of an individual household. Therefore, a household in a highly deprived area is not necessarily deprived itself, just as a household in a less deprived area is not necessarily affluent.
+                """
+    )
+
     st.markdown("#### 🏠 Property type and age")
     built_before_1930_col, detached_col, flats_col = st.columns((1, 1, 1))
     with built_before_1930_col:
         chart_property_age = plot_contextual_info(
             data=contextual_data,
             variable="property_built_before_1930",
-            title="Households in properties built before 1930",
+            title=["Households in properties", "built before 1930"],
         )
         st.altair_chart(chart_property_age, use_container_width=True)
     with detached_col:
         chart_property_detached = plot_contextual_info(
             data=contextual_data,
             variable="property_type_detached",
-            title="Households in detached properties",
+            title=["Households in", "detached properties"],
         )
         st.altair_chart(chart_property_detached, use_container_width=True)
     with flats_col:
         chart_property_flats = plot_contextual_info(
             data=contextual_data,
             variable="property_type_flats_apartments_maisonettes",
-            title="Households in flats, apartments or maisonettes",
+            title=["Households in flats,", "apartments or maisonettes"],
         )
         st.altair_chart(chart_property_flats, use_container_width=True)
-
-    st.markdown(
-        """
-                Note on IMD quintiles: The IMD quintile reflects the deprivation of a geographical area, not of an individual household. Therefore, a household in a highly deprived area is not necessarily deprived itself, just as a household in a less deprived area is not necessarily affluent.
-                """
-    )
 
 
 def create_central_heating_and_tech_expander():
@@ -353,16 +371,24 @@ def create_central_heating_and_tech_expander():
         chart_ch_electricity = plot_contextual_info(
             data=contextual_data,
             variable="ch_electric_only",
-            title="Households with electric central heating only",
+            title=["Households with electric", "central heating only"],
         )
         st.altair_chart(chart_ch_electricity, use_container_width=True)
     with gas_ch_col:
         chart_ch_gas = plot_contextual_info(
             data=contextual_data,
             variable="ch_gas_only",
-            title="Households with gas central heating only",
+            title=["Households with gas", "central heating only"],
         )
         st.altair_chart(chart_ch_gas, use_container_width=True)
+    with smart_heating_col:
+        chart_smart_heating = plot_contextual_info(
+            data=contextual_data,
+            variable="smart_heating_controls",
+            title=["Households with", "smart heating controls"],
+        )
+        st.altair_chart(chart_smart_heating, use_container_width=True)
+
     st.markdown("#### ❄️ Heat pumps and air conditioning units")
     hp_col, ac_col = st.columns((1, 1))
     with hp_col:
@@ -379,13 +405,6 @@ def create_central_heating_and_tech_expander():
             title="Households with air conditioning units",
         )
         st.altair_chart(chart_ac, use_container_width=True)
-    with smart_heating_col:
-        chart_smart_heating = plot_contextual_info(
-            data=contextual_data,
-            variable="smart_heating_controls",
-            title="Households with smart heating controls",
-        )
-        st.altair_chart(chart_smart_heating, use_container_width=True)
 
     st.markdown("#### 🌞 Solar panels and battery storage")
     solar_col, battery_col = st.columns((1, 1))
@@ -462,20 +481,29 @@ Off-gas homes are primarily found in profiles {off_gas_prof}. Due to the minimal
     # List of profiles in the format "Profile X" where X is the profile number
     profiles = [f"Profile {i}" for i in configs.profile_numbers]
 
-    # Create a multiselect widget to select profiles to display, defaulting to a few profiles
-    options = st.multiselect(
-        "Select (or de-select) energy-use profiles to display",
-        options=profiles,
-        default=["Profile 2", "Profile 3", "Profile 6", "Profile 9"],
-    )
+    col_1, options_col, col_2 = st.columns([1, 3, 1])
+    with options_col:
+        # Create a multiselect widget to select profiles to display, defaulting to a few profiles
+        options = st.multiselect(
+            "Select (or de-select) energy-use profiles to display",
+            options=profiles,
+            default=["Profile 2", "Profile 3", "Profile 6", "Profile 9"],
+        )
+    col_3, seasons_options_col, col_4 = st.columns([1, 3, 1])
+    with seasons_options_col:
+        # Create a multiselect widget to select seasons to display on the right hand side, defaulting to "Winter"
+        season_options = st.multiselect(
+            "Select seasons to display (will only change seasonal plots on the right hand side). Winter is presented with dashed lines.",
+            options=["Winter", "Summer"],
+            default=["Winter"],
+        )
 
-    # Create a multiselect widget to select seasons to display on the right hand side, defaulting to "Winter"
-    season_options = st.multiselect(
-        "Select seasons to display (will only change seasonal plots on the right hand side). Winter is presented with dashed lines.",
-        options=["Winter", "Summer"],
-        default=["Winter"],
-    )
+    st.markdown(
+        """
+                Note that, although graphs are side by side, the range of consumption values might be different (see y-axis values).
 
+"""
+    )
     # Create two columns to display daily (on the left) and seasonal daily (on the right)
     # energy consumption profiles
     daily_col, seasonal_daily_col = st.columns([1, 1])
@@ -563,6 +591,7 @@ def overview_results_page():
     # The 'Explore the results' page is organised into the following different tabs
     (
         overview_tab,
+        key_findings_tab,
         distribution_tab,
         annual_consumption_tab,
         daily_consumption_tab,
@@ -570,6 +599,7 @@ def overview_results_page():
     ) = st.tabs(
         [
             "Overview",
+            "Key findings",
             "Distribution of households",
             "Average annual energy consumption",
             "Daily average energy consumption",
@@ -580,6 +610,9 @@ def overview_results_page():
     # Overview tab
     with overview_tab:
         create_overview_tab()
+
+    with key_findings_tab:
+        create_key_findings_tab()
 
     # Distribution of households tab
     with distribution_tab:

@@ -288,27 +288,28 @@ def setup_household_info_section(profile_selector: int):
     """
     st.markdown("### 👨‍👩‍👧‍👦 Household information")
     st.markdown(
-        "In this section you can find information about the households in this profile, such as household composition, occupancy, working status, income and tenure."
+        """
+        In this section you can find information about the households in this profile, such as household composition, occupancy, working status, income and tenure.
+        Numbers in the metric boxes represent the percentage of households in the profile that have the respective characteristic, while the arrows indicate how this percentage compares to the average across all households in the analysis.
+        """
     )
 
     if check_if_value_exists(
         contextual_data, profile_selector, "counts_single_occupancy"
     ):
         # Age of households occupants and number of occupants
-        hc_65p_col, hc_adults_child_col, occ_3more_col, occ_single_col = st.columns(
-            (1, 1, 1, 1)
-        )
+        hc_65p_col, hc_adults_child_col, occ_3more_col, occ_single_col = st.columns(4)
         occ_single_value, occ_single_diff = get_value_and_delta(
             profile_selector, contextual_data, "single_occupancy"
         )
         occ_single_col.metric(
-            label="Households with single occupants only",
+            label="Single occupants only",
             value=occ_single_value,
             delta=occ_single_diff,
             border=True,
         )
     else:
-        hc_65p_col, hc_adults_child_col, occ_3more_col = st.columns((1, 1, 1))
+        hc_65p_col, hc_adults_child_col, occ_3more_col = st.columns(3)
 
     if check_if_value_exists(  # when missing for privately rented, also missing for other tenures
         contextual_data, profile_selector, "counts_privately_rented"
@@ -328,26 +329,26 @@ def setup_household_info_section(profile_selector: int):
         )
 
         priv_rented_prop_col.metric(
-            label="Rented (private) households",
+            label="Private rentals",
             value=priv_rented_value,
             delta=priv_rented_diff,
             border=True,
         )
         social_rented_prop_col.metric(
-            label="Rented (social) households",
+            label="Social rentals",
             value=social_rented_value,
             delta=social_rented_diff,
             border=True,
         )
         owner_occup_prop_col.metric(
-            label="Owner occupiers or unknown tenure households",
+            label="Owner occupiers or unknown tenure",
             value=owner_occup_value,
             delta=owner_occup_diff,
             border=True,
         )
 
-    all_not_working_col, all_working_or_students_col, mix_col = st.columns((1, 1, 1))
-    col_3, income_90k_below_col, income_over_90k_col, col_4 = st.columns((1, 1, 1, 1))
+    all_not_working_col, all_working_or_students_col, mix_col = st.columns(3)
+    col_3, income_90k_below_col, income_over_90k_col, col_4 = st.columns(4)
 
     hc_65p_value, hc_65p_diff = get_value_and_delta(
         profile_selector, contextual_data, "adults_65_plus_only"
@@ -360,19 +361,19 @@ def setup_household_info_section(profile_selector: int):
     )
 
     hc_65p_col.metric(
-        label="Households with 65+ year olds only",
+        label="65+ year olds only",
         value=hc_65p_value,
         delta=hc_65p_diff,
         border=True,
     )
     hc_adults_child_col.metric(
-        label="Households with adults and children",
+        label="Adults and children",
         value=hc_adults_child_value,
         delta=hc_adults_child_diff,
         border=True,
     )
     occ_3more_col.metric(
-        label="Households with 3+ occupants",
+        label="3+ occupants",
         value=occ_3more_value,
         delta=occ_3more_diff,
         border=True,
@@ -389,19 +390,19 @@ def setup_household_info_section(profile_selector: int):
     )
 
     all_not_working_col.metric(
-        label="Households with all not working",
+        label="All occupants not working",
         value=all_not_working_value,
         delta=all_not_working_diff,
         border=True,
     )
     all_working_or_students_col.metric(
-        label="Households with all working or students",
+        label="All occupants working or students",
         value=all_working_or_students_value,
         delta=all_working_or_students_diff,
         border=True,
     )
     mix_col.metric(
-        label="Households with mixed working status",
+        label="Mixed working status",
         value=mix_value,
         delta=mix_diff,
         border=True,
@@ -415,13 +416,13 @@ def setup_household_info_section(profile_selector: int):
     )
 
     income_90k_below_col.metric(
-        label="Households with income of £90k or below",
+        label="Income of £90k or below",
         value=income_90k_below_value,
         delta=income_90k_below_diff,
         border=True,
     )
     income_over_90k_col.metric(
-        label="Households with income above £90k",
+        label="Income above £90k",
         value=income_above_90k_value,
         delta=income_above_90k_diff,
         border=True,
@@ -463,8 +464,14 @@ def setup_property_information_section(profile_selector: int):
     Args:
         profile_selector (int): profile number selected by the user.
     """
+    st.markdown("### 🏘️ Property information")
+    st.markdown(
+        """
+        In this section you can find information about the properties in this profile, such as property age, type, region and LSOA IMD quintiles.
+        """
+    )
     # FIRST LINE OF METRICS
-    imd_1_2_col, imd_3_col, imd_4_5_col, london_col = st.columns((1, 1, 1, 1))
+    imd_1_2_col, imd_3_col, imd_4_5_col = st.columns(3)
 
     imd_1_2_value, imd_1_2_diff = get_value_and_delta(
         profile_selector, contextual_data, "imd_1_2"
@@ -475,32 +482,23 @@ def setup_property_information_section(profile_selector: int):
     imd_4_5_value, imd_4_5_diff = get_value_and_delta(
         profile_selector, contextual_data, "imd_4_5"
     )
-    london_value, london_diff = get_value_and_delta(
-        profile_selector, contextual_data, "region_greater_london"
-    )
 
     imd_1_2_col.metric(
-        label="Properties in IMD 1-2 quintile areas",
+        label="IMD 1-2 quintile areas (most deprived)",
         value=imd_1_2_value,
         delta=imd_1_2_diff,
         border=True,
     )
     imd_3_col.metric(
-        label="Properties in IMD 3 quintile areas",
+        label="IMD 3 quintile areas",
         value=imd_3_value,
         delta=imd_3_diff,
         border=True,
     )
     imd_4_5_col.metric(
-        label="Properties in IMD 4-5 quintile areas",
+        label="IMD 4-5 quintile areas (least deprived)",
         value=imd_4_5_value,
         delta=imd_4_5_diff,
-        border=True,
-    )
-    london_col.metric(
-        label="Properties in Greater London",
-        value=london_value,
-        delta=london_diff,
         border=True,
     )
 
@@ -509,7 +507,8 @@ def setup_property_information_section(profile_selector: int):
         profile_selector,
         "counts_property_type_flats_apartments_maisonettes",
     ):
-        built_before_1930_col, detached_col, flats_col = st.columns((1, 1, 1))
+        col_1, london_col, built_before_1930_col, col_2 = st.columns(4)
+        col_3, detached_col, flats_col, col_4 = st.columns(4)
         flats_value, flats_diff = get_value_and_delta(
             profile_selector,
             contextual_data,
@@ -523,10 +522,20 @@ def setup_property_information_section(profile_selector: int):
         )
         missing_flats_info = False
     else:
-        col_5, built_before_1930_col, detached_col, col_6 = st.columns((1, 1, 1, 1))
+        london_col, built_before_1930_col, detached_col = st.columns(3)
         missing_flats_info = True
 
     setup_additional_property_info_expander(missing_flats_info=missing_flats_info)
+
+    london_value, london_diff = get_value_and_delta(
+        profile_selector, contextual_data, "region_greater_london"
+    )
+    london_col.metric(
+        label="Properties in Greater London",
+        value=london_value,
+        delta=london_diff,
+        border=True,
+    )
 
     built_before_1930_value, built_before_1930_diff = get_value_and_delta(
         profile_selector, contextual_data, "property_built_before_1930"
@@ -543,7 +552,7 @@ def setup_property_information_section(profile_selector: int):
         border=True,
     )
     detached_col.metric(
-        label="Detached houses",
+        label="Detached properties",
         value=detached_value,
         delta=detached_diff,
         border=True,
@@ -630,24 +639,31 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
     Args:
         profile_selector (int): profile number selected by the user.
     """
+    st.markdown("### 🔋 Central heating and presence of technologies")
+    st.markdown(
+        """
+        In this section you can find information about the properties' central heating fuel, presence of smart heating controls, solar panels, electric vehicles, air conditioning, heat pumps, battery storage and EV charging points.
+        Numbers in the metric boxes represent the percentage of households in the profile that have the respective characteristic, while the arrows indicate how this percentage compares to the average across all households in the analysis.
+"""
+    )
 
     # We create 3 lines of metrics
-    smart_heating_col, solar_col, ev_col, ac_col = st.columns((1, 1, 1, 1))
+    smart_heating_col, solar_col, ev_col, ac_col = st.columns(4)
     if check_if_value_exists(
         contextual_data, profile_selector, "counts_battery_storage"
     ) and check_if_value_exists(contextual_data, profile_selector, "counts_heat_pumps"):
-        battery_col, hp_col, ev_charging_col, col_7 = st.columns((1, 1, 1, 1))
+        battery_col, hp_col, ev_charging_col, col_7 = st.columns(4)
     elif check_if_value_exists(
         contextual_data, profile_selector, "counts_battery_storage"
     ):
-        battery_col, ev_charging_col, hp_col, col_7 = st.columns((1, 1, 1, 1))
+        battery_col, ev_charging_col, hp_col, col_7 = st.columns(4)
     else:
-        hp_col, ev_charging_col, battery_col, col_7 = st.columns((1, 1, 1, 1))
+        hp_col, ev_charging_col, battery_col, col_7 = st.columns(4)
 
     smart_heating_c_value, smart_heating_c_diff = get_value_and_delta(
         profile_selector, contextual_data, "smart_heating_controls"
     )
-    elec_ch_col, gas_ch_col, col_8, col_9 = st.columns((1, 1, 1, 1))
+    elec_ch_col, gas_ch_col, col_8, col_9 = st.columns(4)
 
     solar_value, solar_diff = get_value_and_delta(
         profile_selector, contextual_data, "solar_panels"
@@ -656,25 +672,25 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
     ac_value, ac_diff = get_value_and_delta(profile_selector, contextual_data, "ac")
 
     smart_heating_col.metric(
-        label="Presence of smart heating controls",
+        label="Smart heating controls",
         value=smart_heating_c_value,
         delta=smart_heating_c_diff,
         border=True,
     )
     solar_col.metric(
-        label="Presence of solar panels",
+        label="Solar panels",
         value=solar_value,
         delta=solar_diff,
         border=True,
     )
     ev_col.metric(
-        label="Presence of electric vehicles",
+        label="Electric vehicles",
         value=ev_value,
         delta=ev_diff,
         border=True,
     )
     ac_col.metric(
-        label="Presence of air conditioning",
+        label="Air conditioning units",
         value=ac_value,
         delta=ac_diff,
         border=True,
@@ -685,7 +701,7 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
             profile_selector, contextual_data, "ev_charging"
         )
         ev_charging_col.metric(
-            label="Presence of EV charging points",
+            label="EV charging points",
             value=ev_charging_value,
             delta=ev_charging_diff,
             border=True,
@@ -696,7 +712,7 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
             profile_selector, contextual_data, "heat_pumps"
         )
         hp_col.metric(
-            label="Presence of heat pumps",
+            label="Heat pumps",
             value=hp_value,
             delta=hp_diff,
             border=True,
@@ -709,7 +725,7 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
             profile_selector, contextual_data, "battery_storage"
         )
         battery_col.metric(
-            label="Presence of battery storage",
+            label="Battery storage",
             value=battery_value,
             delta=battery_diff,
             border=True,
@@ -769,15 +785,5 @@ def select_profile_page():
     )
 
     setup_household_info_section(profile_selector)
-
-    st.markdown("### 🏘️ Property information")
-    st.markdown(
-        "In this section you can find information about the properties in this profile, such as property age, type, region and LSOA IMD quintiles."
-    )
     setup_property_information_section(profile_selector)
-
-    st.markdown("### 🔋 Central heating and presence of technologies")
-    st.markdown(
-        "In this section you can find information about the properties' central heating fuel, presence of smart heating controls, solar panels, electric vehicles, air conditioning, heat pumps, battery storage and EV charging points."
-    )
     setup_central_heating_and_technologies_section(profile_selector)
