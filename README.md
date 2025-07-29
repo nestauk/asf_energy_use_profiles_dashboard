@@ -20,7 +20,9 @@ The SERL data is a rich source of information, including half-hourly gas and ele
 
 Navigate to the directory where you want to clone the repository and run:
 
-`git clone git@github.com:nestauk/asf_energy_use_profiles_dashboard.git`
+```
+git clone git@github.com:nestauk/asf_energy_use_profiles_dashboard.git
+```
 
 2. Create a conda environment and install requirements:
 
@@ -30,12 +32,13 @@ conda create --name asf_energy_use_profiles_dashboard python==3.13
 conda activate asf_energy_use_profiles_dashboard
 pip install -r requirements.txt
 pip install pre-commit
-
 ```
 
 3. Run the dashboard locally with:
 
-`streamlit run energy_profiles_explorer.py`
+```
+streamlit run energy_profiles_explorer.py
+```
 
 ## 🗂️ Repository structure
 
