@@ -1,21 +1,77 @@
-# Energy-use profiles explorer
+# ⚡ 🔌 Energy-use profiles explorer
+
+This repository contains the code to create the **Energy-use Profiles Explorer dashboard**, a dashboard for exploring **energy-use profiles** built smart meter data from a representative sample of households in Great Britain. **Energy-use profiles** are groups of households with similar energy consumption patterns.
+
+The dashboard is available at [add website link here]. To know more about the project please refer to the [project page](https://www.nesta.org.uk/project/using-smart-meters-to-identify-energy-use-profiles/).
+
+The dashboard was built using [Streamlit](https://streamlit.io/). To run this dashboard locally or to contribute to its development, follow the instructions in the Setup section.
+
+## 🧩 Data
+
+The analyses presented in this dashboard were conducted using **Smart Energy Research Lab (SERL) observatory data** [1], containing longitudinal smart meter electricity and gas data for over 13,000 households in Great Britain. The data is accessible through the [UK Data Service SecureLab](https://ukdataservice.ac.uk/) by accredited researchers.
+
+The SERL data is a rich source of information, including half-hourly gas and electricity consumption data and household survey data, such as property type, household composition, and income. The data documentation is available on the [data catalogue](https://beta.ukdataservice.ac.uk/datacatalogue/studies/study?id=8666#!/documentation).
+
+[1]: Elam, S., Few, J., McKenna, E., Hanmer, C., Pullinger, M., Zapata-Webborn, E., Oreszczyn, T., Anderson, B., Department for Levelling Up, Housing and Communities, European Centre for Medium-Range Weather Forecasts, Royal Mail Group Limited. (2024). Smart Energy Research Lab Observatory Data, 2019-2024: Secure Access. [data collection]. 8th Edition. UK Data Service. SN: 8666, DOI: http://doi.org/10.5255/UKDA-SN-8666-8
 
 ## 🛠️ Setup
 
 1. Clone this repository:
 
-`git clone git@github.com:nestauk/asf_energy_use_profiles_dashboard.git`
+Navigate to the directory where you want to clone the repository and run:
 
-2. Create a conda environment:
+```
+git clone git@github.com:nestauk/asf_energy_use_profiles_dashboard.git
+```
 
-`conda create --name asf_energy_use_profiles_dashboard python==3.13`
+2. Create a conda environment and install requirements:
 
-3. Activate your conda environment:
+```
+cd asf_energy_use_profiles_dashboard
+conda create --name asf_energy_use_profiles_dashboard python==3.13
+conda activate asf_energy_use_profiles_dashboard
+pip install -r requirements.txt
+pip install pre-commit
+```
 
-`conda activate asf_energy_use_profiles_dashboard`
+3. Run the dashboard locally with:
 
-4. Install the package requirements:
-`pip install -r requirements.txt`
+```
+streamlit run energy_profiles_explorer.py
+```
 
-5. Install pre-commit hooks:
-`pip install pre-commit`
+## 🗂️ Repository structure
+
+The repository structure and key scripts are highlighted below:
+
+```
+asf_energy_use_profiles_dashboard/
+├─ energy_profiles_explorer.py # main dashboard script
+├───config/
+│    Configuration scripts
+│    ├─ configs.py
+│    ├─ css_style.py
+│    ├─ fonts_setup.py
+│    ├─ highlights.py
+├───.streamlit/
+│    Streamlit specific configuration files
+│    ├─ configs.toml
+├───getters/
+│    Scripts with functions to process and load data from S3
+│    ├─ data_getters.py
+│    ├─ data_processing.py
+├───utils/
+│    Utils handling and visualising data
+│    ├─ data_handling_utils.py
+│    ├─ data_vis_utils.py
+├───pages/
+│    Dashboard pages setup
+│    ├─ about_dashboard_page.py
+│    ├─ about_data_page.py
+│    ├─ overview_results_page.py
+│    ├─ select_profile_page.py
+```
+
+## 📢 Contributor guidelines
+
+[Technical and working style guidelines](https://github.com/nestauk/ds-cookiecutter/blob/master/GUIDELINES.md)
