@@ -12,7 +12,7 @@ def about_dashboard_page():
     st.markdown("# :zap: Welcome to the energy-use profiles explorer!")
 
     st.markdown(
-        "#### An interactive tool to explore energy patterns of households in Great Britain"
+        "#### An interactive tool to explore patterns of energy usage of households in Great Britain"
     )
 
     st.markdown("## The why")
