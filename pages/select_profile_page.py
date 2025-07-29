@@ -142,32 +142,32 @@ def setup_profile_main_metrics(profile_selector: int):
             border=True,
         )
 
-    with st.sidebar:
-        st.markdown("Profile consumption values in comparison")
-        elec_color, gas_color = st.columns(2)
+    # with st.sidebar:
+    #     st.markdown("Profile consumption values in comparison")
+    #     elec_color, gas_color = st.columns(2)
 
-        with elec_color:
-            elec_color_chart = setup_coloured_bars(
-                min_val=profile_annual_avgs["avg_annual_elec_consumption_kWh"].min(),
-                max_val=profile_annual_avgs["avg_annual_elec_consumption_kWh"].max(),
-                value=profile_annual_avgs[
-                    profile_annual_avgs["profile"] == profile_selector
-                ]["avg_annual_elec_consumption_kWh"].iloc[0],
-                energy_type="Electricity",
-            )
-            st.altair_chart(elec_color_chart, use_container_width=True)
+    #     with elec_color:
+    #         elec_color_chart = setup_coloured_bars(
+    #             min_val=profile_annual_avgs["avg_annual_elec_consumption_kWh"].min(),
+    #             max_val=profile_annual_avgs["avg_annual_elec_consumption_kWh"].max(),
+    #             value=profile_annual_avgs[
+    #                 profile_annual_avgs["profile"] == profile_selector
+    #             ]["avg_annual_elec_consumption_kWh"].iloc[0],
+    #             energy_type="Electricity",
+    #         )
+    #         st.altair_chart(elec_color_chart, use_container_width=True)
 
-        if profile_selector not in configs.profiles_low_gas_count:
-            with gas_color:
-                gas_color_chart = setup_coloured_bars(
-                    min_val=profile_annual_avgs["avg_annual_gas_consumption_kWh"].min(),
-                    max_val=profile_annual_avgs["avg_annual_gas_consumption_kWh"].max(),
-                    value=profile_annual_avgs[
-                        profile_annual_avgs["profile"] == profile_selector
-                    ]["avg_annual_gas_consumption_kWh"].iloc[0],
-                    energy_type="Gas",
-                )
-                st.altair_chart(gas_color_chart, use_container_width=True)
+    #     if profile_selector not in configs.profiles_low_gas_count:
+    #         with gas_color:
+    #             gas_color_chart = setup_coloured_bars(
+    #                 min_val=profile_annual_avgs["avg_annual_gas_consumption_kWh"].min(),
+    #                 max_val=profile_annual_avgs["avg_annual_gas_consumption_kWh"].max(),
+    #                 value=profile_annual_avgs[
+    #                     profile_annual_avgs["profile"] == profile_selector
+    #                 ]["avg_annual_gas_consumption_kWh"].iloc[0],
+    #                 energy_type="Gas",
+    #             )
+    #             st.altair_chart(gas_color_chart, use_container_width=True)
 
 
 def setup_daily_consumption_charts(profile_selector: int):
