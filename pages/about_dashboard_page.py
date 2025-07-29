@@ -15,6 +15,21 @@ def about_dashboard_page():
         "#### An interactive tool to explore patterns of energy usage of households in Great Britain"
     )
 
+    st.markdown("## What is an energy-use profile?")
+    st.markdown(
+        """
+                An 'energy-use profile' is a group of households that consume energy similarly. Each energy-use profile can be described by the:
+
+                - proportion of the population it represents
+                - average annual electricity and gas consumption
+                - patterns of elecricity and gas consumption throughout the day and in specific seasons
+                - household characteristics such number of occupants, their working status and income
+                - property characteristics such as property type and age
+                - heating system characteristics such as type of heating system
+                - presence of specific technologies such as solar panels or electric vehicles
+                """
+    )
+
     st.markdown("## The why")
     st.markdown(
         """
@@ -35,9 +50,7 @@ def about_dashboard_page():
     st.markdown(
         """
                 The **energy-use profiles explorer** is a tool designed to help you explore the energy-use profiles of different types of households in GB.
-                It provides an interactive way to view and compare energy consumption patterns, enabling users to gain insights into household energy usage.
-
-                Use the sidebar to navigate through the different sections of the explorer.
+                It provides an interactive way to view and compare energy consumption patterns, enabling users to gain insights into household energy usage. Use the sidebar to navigate through the different sections of the explorer.
 
                 #### 'Explore the results'
                 Provides an overview of results, where all energy-use profiles are displayed and compared across a variety of characteristics.
