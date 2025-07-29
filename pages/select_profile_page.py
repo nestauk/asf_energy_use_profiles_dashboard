@@ -434,23 +434,30 @@ def setup_household_info_section(profile_selector: int):
     setup_additional_household_info_expander(profile_selector)
 
 
-def setup_additional_property_info_expander():
+def setup_additional_property_info_expander(missing_flats_info: bool):
     """
     Sets up an expander for additional property information metrics,
     if at least one of the property information metrics is missing.
 
     Args:
-        profile_selector (int): profile number selected by the user.
+        missing_flats_info (bool): True if flats, apartments or maisonettes data is missing for the profile.
     """
     with st.expander(
         "Expand for more property-related information", width=1000, icon="⬇️"
     ):
-        flats_pop = get_avg_population_value(
-            contextual_data, "property_type_flats_apartments_maisonettes"
-        ).round(1)
-        st.write(
-            f"Flats, apartments or maisonettes data is not available for this profile due to low counts. {flats_pop}% of households in the whole dataset are flats, apartments or maisonettes."
+        st.markdown(
+            """
+                Note on IMD quintiles: The IMD quintile reflects the deprivation of a geographical area, not of an individual household. Therefore, a household in a highly deprived area is not necessarily deprived itself, just as a household in a less deprived area is not necessarily affluent.
+                """
         )
+
+        if missing_flats_info:
+            flats_pop = get_avg_population_value(
+                contextual_data, "property_type_flats_apartments_maisonettes"
+            ).round(1)
+            st.write(
+                f"Flats, apartments or maisonettes data is not available for this profile due to low counts. {flats_pop}% of households in the whole dataset are flats, apartments or maisonettes."
+            )
 
 
 def setup_property_information_section(profile_selector: int):
@@ -518,9 +525,12 @@ def setup_property_information_section(profile_selector: int):
             delta=flats_diff,
             border=True,
         )
+        missing_flats_info = False
     else:
         col_5, built_before_1930_col, detached_col, col_6 = st.columns((1, 1, 1, 1))
-        setup_additional_property_info_expander()
+        missing_flats_info = True
+
+    setup_additional_property_info_expander(missing_flats_info=missing_flats_info)
 
     built_before_1930_value, built_before_1930_diff = get_value_and_delta(
         profile_selector, contextual_data, "property_built_before_1930"

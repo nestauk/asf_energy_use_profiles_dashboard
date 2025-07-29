@@ -336,6 +336,12 @@ def create_property_information_expander():
         )
         st.altair_chart(chart_property_flats, use_container_width=True)
 
+    st.markdown(
+        """
+                Note on IMD quintiles: The IMD quintile reflects the deprivation of a geographical area, not of an individual household. Therefore, a household in a highly deprived area is not necessarily deprived itself, just as a household in a less deprived area is not necessarily affluent.
+                """
+    )
+
 
 def create_central_heating_and_tech_expander():
     """
