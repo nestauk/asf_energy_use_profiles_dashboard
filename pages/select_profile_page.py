@@ -7,8 +7,6 @@ The main function is select_profile_page() which sets up the page.
 ## Package imports
 import streamlit as st
 import altair as alt
-import pandas as pd
-import numpy as np
 
 # Local imports
 from config.fonts_setup import nestafont, NESTA_COLOURS
