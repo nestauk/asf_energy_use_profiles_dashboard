@@ -99,7 +99,7 @@ def setup_profile_main_metrics(profile_selector: int):
     col_1, n_households, perc_households, col_2 = st.columns(4)
 
     n_households.metric(
-        label="Number of households",
+        label="Number of households (in sample)",
         value=f"{int(profile_nums_filtered['number_of_households']):,}",
         border=True,
     )
