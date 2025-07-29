@@ -288,7 +288,6 @@ def setup_household_info_section(profile_selector: int):
     st.markdown(
         """
         In this section you can find information about the households in this profile, such as household composition, occupancy, working status, income and tenure.
-        Numbers in the metric boxes represent the percentage of households in the profile that have the respective characteristic, while the arrows indicate how this percentage compares to the average across all households in the analysis.
         """
     )
 
@@ -429,30 +428,20 @@ def setup_household_info_section(profile_selector: int):
     setup_additional_household_info_expander(profile_selector)
 
 
-def setup_additional_property_info_expander(missing_flats_info: bool):
+def setup_additional_property_info_expander():
     """
     Sets up an expander for additional property information metrics,
     if at least one of the property information metrics is missing.
-
-    Args:
-        missing_flats_info (bool): True if flats, apartments or maisonettes data is missing for the profile.
     """
     with st.expander(
         "Expand for more property-related information", width=1000, icon="⬇️"
     ):
-        st.markdown(
-            """
-                Note on IMD quintiles: The IMD quintile reflects the deprivation of a geographical area, not of an individual household. Therefore, a household in a highly deprived area is not necessarily deprived itself, just as a household in a less deprived area is not necessarily affluent.
-                """
+        flats_pop = get_avg_population_value(
+            contextual_data, "property_type_flats_apartments_maisonettes"
+        ).round(1)
+        st.write(
+            f"Flats, apartments or maisonettes data is not available for this profile due to low counts. {flats_pop}% of households in the whole dataset are flats, apartments or maisonettes."
         )
-
-        if missing_flats_info:
-            flats_pop = get_avg_population_value(
-                contextual_data, "property_type_flats_apartments_maisonettes"
-            ).round(1)
-            st.write(
-                f"Flats, apartments or maisonettes data is not available for this profile due to low counts. {flats_pop}% of households in the whole dataset are flats, apartments or maisonettes."
-            )
 
 
 def setup_property_information_section(profile_selector: int):
@@ -465,7 +454,8 @@ def setup_property_information_section(profile_selector: int):
     st.markdown("### 🏘️ Property information")
     st.markdown(
         """
-        In this section you can find information about the properties in this profile, such as property age, type, region and LSOA IMD quintiles.
+        In this section you can find information about the properties in this profile, such as property age, type, region and Index of Multiple Deprivation (IMD) quintile. Note that IMD quintiles reflect the deprivation of a geographical area, not of an individual household. Therefore, a household in a highly deprived area is not necessarily deprived itself, just as a household in a less deprived area is not necessarily affluent.
+
         """
     )
     # FIRST LINE OF METRICS
@@ -518,12 +508,9 @@ def setup_property_information_section(profile_selector: int):
             delta=flats_diff,
             border=True,
         )
-        missing_flats_info = False
     else:
         london_col, built_before_1930_col, detached_col = st.columns(3)
-        missing_flats_info = True
-
-    setup_additional_property_info_expander(missing_flats_info=missing_flats_info)
+        setup_additional_property_info_expander()
 
     london_value, london_diff = get_value_and_delta(
         profile_selector, contextual_data, "region_greater_london"
@@ -641,7 +628,6 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
     st.markdown(
         """
         In this section you can find information about the properties' central heating fuel, presence of smart heating controls, solar panels, electric vehicles, air conditioning, heat pumps, battery storage and EV charging points.
-        Numbers in the metric boxes represent the percentage of households in the profile that have the respective characteristic, while the arrows indicate how this percentage compares to the average across all households in the analysis.
 """
     )
 
@@ -779,7 +765,14 @@ def select_profile_page():
 
     st.markdown("## 📄 Contextual information")
     st.markdown(
-        "The sections below provide contextual information about the households in this profile and their properties, for example household composition, property type and presence of heat pumps. The metrics are compared to the average across all households in the analysis, as presented by the values accompanying the green and red arrows. A green arrow indicates that the value for this profile is higher than the average, while a red arrow indicates that the value for this profile is lower than the average."
+        """The sections below provide contextual information about the households in this profile and their properties, for example household composition, property type and presence of heat pumps. This information is presented as a series of metrics, each representing the percentage of households in the profile that have the respective characteristic. The metrics are presented as big values in the metric boxes. A smaller value with an arrow next to it indicates how the metric value compares to the average across all households in the analysis.
+        A green arrow indicates that the value for this profile is higher than the average, while a red arrow indicates that the value for this profile is lower than the average.
+        """
+    )
+    st.markdown(
+        """
+                Due to missing data, the category percentages for some variables within each profile may not sum to 100%. For example, the combined percentages of the 'Income of £90K or below' and 'Income above £90K' categories do not add up to 100%. The remainder represents the proportion of households for which income data is unavailable.
+                """
     )
 
     setup_household_info_section(profile_selector)

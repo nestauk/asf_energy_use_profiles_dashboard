@@ -449,6 +449,8 @@ def create_context_tab():
         This section highlights differences between energy-use profiles across a variety of characteristics, including household composition, income, property type and age, central heating fuel type, and presence of technologies.
 
         The information is presented as bar plots, where each bar represents one energy-use profiles. When a bar is missing, it means the data count for that profile was too low to be shown due to statistical disclosure rules. The line in yellow indicates the average for the population, which is calculated across all households.
+
+        Due to missing data, the category percentages for some variables within each profile may not sum to 100%. For example, the combined percentages of the 'Income of £90K or below' and 'Income above £90K' categories do not add up to 100%. The remainder represents the proportion of households for which income data is unavailable.
         """
     )
 
