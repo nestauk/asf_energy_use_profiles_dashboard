@@ -102,7 +102,7 @@ def setup_profile_main_metrics(profile_selector: int):
 
     n_households.metric(
         label="Number of households",
-        value=str(int(profile_nums_filtered["number_of_households"])),
+        value=f"{int(profile_nums_filtered['number_of_households']):,}",
         border=True,
     )
     perc_households.metric(
@@ -114,15 +114,14 @@ def setup_profile_main_metrics(profile_selector: int):
     profile_annual_avgs_filtered = profile_annual_avgs[
         profile_annual_avgs["profile"] == profile_selector
     ].iloc[0]
-
+    f"{int(profile_nums_filtered['number_of_households']):,}",
     col_3, avg_annual_elc, col_4 = st.columns(3)
     avg_annual_elc.metric(
         label="Average annual electricity consumption",
-        value=str(
+        value=f"{
             int(
                 profile_annual_avgs_filtered["avg_annual_elec_consumption_kWh"].round(0)
-            )
-        )
+            ):,}"
         + " kWh",
         border=True,
     )
@@ -131,13 +130,10 @@ def setup_profile_main_metrics(profile_selector: int):
 
         avg_annual_gas.metric(
             label="Average annual gas consumption",
-            value=str(
-                int(
-                    profile_annual_avgs_filtered[
-                        "avg_annual_gas_consumption_kWh"
-                    ].round(0)
-                )
-            )
+            value=f"{
+            int(
+                profile_annual_avgs_filtered["avg_annual_gas_consumption_kWh"].round(0)
+            ):,}"
             + " kWh",
             border=True,
         )
