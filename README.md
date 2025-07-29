@@ -1,14 +1,14 @@
 # ⚡ 🔌 Energy-use profiles explorer
 
-This repository contains the code to create the **Energy-use Profiles Explorer dashboard**, a dashboard for exploring energy-use profiles built from GB household smart meter data.
+This repository contains the code to create the **Energy-use Profiles Explorer dashboard**, a dashboard for exploring **energy-use profiles** built smart meter data from a representative sample of households in Great Britain. **Energy-use profiles** are groups of households with similar energy consumption patterns.
 
-The dashboard is available at: [add website link here]
+The dashboard is available at [add website link here]. To know more about the project please refer to the [project page](https://www.nesta.org.uk/project/using-smart-meters-to-identify-energy-use-profiles/).
 
 The dashboard was built using [Streamlit](https://streamlit.io/). To run this dashboard locally or to contribute to its development, follow the instructions in the Setup section.
 
 ## 🧩 Data
 
-The analyses presented in this document were conducted using **Smart Energy Research Lab (SERL) observatory data** [1], containing longitudinal smart meter electricity and gas data for over 13,000 households in Great Britain. The data is accessible through the [UK Data Service SecureLab](https://ukdataservice.ac.uk/) by accredited researchers.
+The analyses presented in this dashboard were conducted using **Smart Energy Research Lab (SERL) observatory data** [1], containing longitudinal smart meter electricity and gas data for over 13,000 households in Great Britain. The data is accessible through the [UK Data Service SecureLab](https://ukdataservice.ac.uk/) by accredited researchers.
 
 The SERL data is a rich source of information, including half-hourly gas and electricity consumption data and household survey data, such as property type, household composition, and income. The data documentation is available on the [data catalogue](https://beta.ukdataservice.ac.uk/datacatalogue/studies/study?id=8666#!/documentation).
 
