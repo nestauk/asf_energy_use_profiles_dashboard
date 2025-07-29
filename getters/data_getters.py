@@ -9,9 +9,7 @@ import os
 outputs_path = "s3://asf-energy-use-profiles/2nd_phase_results/outputs/"
 
 
-st.cache_data
-
-
+st.cache_data(show_spinner="Loading data...")
 def get_distribution_households() -> pd.DataFrame:
     """
     Get the CSV with distribution of households per profile (numbers and percentages).
@@ -29,9 +27,7 @@ def get_distribution_households() -> pd.DataFrame:
     return profile_info
 
 
-st.cache_data
-
-
+st.cache_data(show_spinner="Loading data...")
 def get_annual_energy_consumption_avg_per_profile() -> pd.DataFrame:
     """
     Get the CSV with average annual electricity and gas consumption per profile.
@@ -49,9 +45,7 @@ def get_annual_energy_consumption_avg_per_profile() -> pd.DataFrame:
     return profile_annual_avgs
 
 
-st.cache_data
-
-
+st.cache_data(show_spinner="Loading data...")
 def get_hh_consumption_per_profile(
     energy_type: str = "electricity", season: str = ""
 ) -> pd.DataFrame:
@@ -85,9 +79,7 @@ def get_hh_consumption_per_profile(
     return daily_data
 
 
-st.cache_data
-
-
+st.cache_data(show_spinner="Loading data...")
 def get_contextual_information() -> pd.DataFrame:
     """
     Get the CSV with contextual information about the profiles.

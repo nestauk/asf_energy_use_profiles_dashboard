@@ -5,6 +5,7 @@ This script only needs to be run once to generate the required CSV files, by doi
 python data_getters/data_processing.py
 """
 
+import numpy as np
 import pandas as pd
 import os
 import logging
@@ -148,7 +149,7 @@ def _process_contextual_data(
         if (value not in ["profile", "number_households"]) and (
             value in contextual_data.columns
         ):
-            # Calculate the proportion of each count column relative to the total number of households
+            # Calculate the percentage of each count column relative to the total number of households
             prop_col = f"proportion_{value.split("counts_")[1]}"
             contextual_data[prop_col] = (
                 contextual_data[value] / contextual_data["number_households"] * 100
@@ -287,7 +288,7 @@ def process_contextual_info_income(name: str) -> pd.DataFrame:
 
     Args:
         name (str): The name of the income category to process.
-
+            Takes the following values "income", "income_over_90k", "income_up_to_30k".
     Returns:
         pd.DataFrame: A DataFrame containing the processed income contextual data.
     """
@@ -302,7 +303,6 @@ def process_contextual_info_income(name: str) -> pd.DataFrame:
         "Up to £30,000": "counts_income_30k_below",
         "£30,000-£90,000": "counts_income_30k_to_90k",
         "Income unknown": "counts_income_unknown",
-        "Unknown": "counts_income_unknown",
     }
 
     contextual_data = _process_contextual_data(contextual_data, mapping)
@@ -310,14 +310,14 @@ def process_contextual_info_income(name: str) -> pd.DataFrame:
     return contextual_data
 
 
-def process_contextual_info_tenure(name) -> pd.DataFrame:
+def process_contextual_info_tenure() -> pd.DataFrame:
     """
     Processes the tenure contextual data.
 
     Returns:
         pd.DataFrame: A DataFrame containing the processed tenure contextual data.
     """
-    contextual_data = _get_raw_contextual_data(name)
+    contextual_data = _get_raw_contextual_data("tenure")
     mapping = {
         "Cluster": "profile",
         "Total households": "number_households",
@@ -325,7 +325,6 @@ def process_contextual_info_tenure(name) -> pd.DataFrame:
         "Rented (private)": "counts_privately_rented",
         "Rented (social)": "counts_social_rented",
         "Owner-occupied, Unknown": "counts_owner_occupier_or_unknown_tenure",
-        "Owner-occupied": "counts_owner_occupier",
     }
     contextual_data = _process_contextual_data(contextual_data, mapping)
     return contextual_data
@@ -351,7 +350,7 @@ def process_contextual_info_property_built_year() -> pd.DataFrame:
 
 def process_contextual_info_property_type_detached() -> pd.DataFrame:
     """
-    Processes the property type contextual data based on the specified name.
+    Processes detached property type contextual data.
 
     Returns:
         pd.DataFrame: A DataFrame containing the processed property type contextual data.
@@ -372,7 +371,7 @@ def process_contextual_info_property_type_detached() -> pd.DataFrame:
 
 def process_contextual_info_property_type_flats() -> pd.DataFrame:
     """
-    Processes the property type contextual data based on the specified name.
+    Processes flats property type contextual data.
 
     Returns:
         pd.DataFrame: A DataFrame containing the processed property type contextual data.
@@ -560,6 +559,48 @@ def process_contextual_info_smart_heating_controls() -> pd.DataFrame:
     return contextual_data
 
 
+def process_contextual_info_epc_c_or_above() -> pd.DataFrame:
+    """
+    Processes the EPC rating contextual data for properties rated C or above.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the processed EPC rating contextual data.
+    """
+    contextual_data = _get_raw_contextual_data("epc_c_above")
+
+    mapping = {
+        "Cluster": "profile",
+        "Total households": "number_households",
+        # EPC rating C or above
+        "EPC C or above": "counts_epc_c_or_above",
+    }
+
+    contextual_data = _process_contextual_data(contextual_data, mapping)
+
+    return contextual_data
+
+
+def process_contextual_info_tariff() -> pd.DataFrame:
+    """
+    Processes the tariff contextual data.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the processed tariff contextual data.
+    """
+    contextual_data = _get_raw_contextual_data("tariff")
+
+    mapping = {
+        "Cluster": "profile",
+        "Total households": "number_households",
+        # Tariff
+        "TOUT": "counts_time_of_use_tariff",
+    }
+
+    contextual_data = _process_contextual_data(contextual_data, mapping)
+
+    return contextual_data
+
+
 def process_contextual_information():
     """
     Processes all contextual information and saves it as a CSV file to S3.
@@ -577,8 +618,7 @@ def process_contextual_information():
     income = process_contextual_info_income("income")
     income_over_90k = process_contextual_info_income("income_over_90k")
     # income_up_to_30k = process_contextual_info_income("income_up_to_30k")
-    tenure = process_contextual_info_tenure("tenure")
-    owner_occupier = process_contextual_info_tenure("owner_occupier")
+    tenure = process_contextual_info_tenure()
     property_built_year = process_contextual_info_property_built_year()
     property_type_detached = process_contextual_info_property_type_detached()
     property_type_flats = process_contextual_info_property_type_flats()
@@ -590,6 +630,8 @@ def process_contextual_information():
     solar_panels = process_contextual_info_solar_panels()
     batery_storage = process_contextual_info_battery_storage()
     smart_heating_controls = process_contextual_info_smart_heating_controls()
+    epc_c_or_above = process_contextual_info_epc_c_or_above()
+    tou_tariff = process_contextual_info_tariff()
 
     all_other_data = [
         region,
@@ -601,7 +643,6 @@ def process_contextual_information():
         income_over_90k,
         # income_up_to_30k,
         tenure,
-        owner_occupier,
         property_built_year,
         property_type_detached,
         property_type_flats,
@@ -613,11 +654,28 @@ def process_contextual_information():
         solar_panels,
         batery_storage,
         smart_heating_controls,
+        epc_c_or_above,
+        tou_tariff,
     ]
 
     for df in all_other_data:
+        # Remove the "All clusters" lines, as we don't need them
+        contextual_data = contextual_data[contextual_data["profile"] != "All clusters"]
+
+        # Ensure the number of households is NaN for the "Count of other clusters" profile
+        # Since we already have the number of households in the numbered profiles
+        contextual_data["number_households"] = np.where(
+            contextual_data["profile"] == "Count of other clusters",
+            np.nan,
+            contextual_data["number_households"],
+        )
+
+        # Merge the data
         contextual_data = pd.merge(
-            contextual_data, df, on=["profile", "number_households"], how="left"
+            contextual_data,
+            df.drop(columns="number_households"),
+            on=["profile"],
+            how="outer",
         )
 
     contextual_data.to_csv(
