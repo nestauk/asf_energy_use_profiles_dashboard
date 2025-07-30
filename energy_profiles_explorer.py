@@ -78,32 +78,30 @@ def energy_profiles_explorer():
     This function will setup a Streamlit app with expanders, sidebar and multiple pages.
     """
 
-    with st.spinner("Loading the Energy-use profiles explorer..."):
-        favicon = Image.open(f"{current_dir}/images/nesta_favicon.png")
-        nesta_logo = Image.open(f"{current_dir}/images/nesta_logo.png")
-        # Configure your browser tab by adding a title, changing the layout, and adding an icon to appear on your browser tab
-        st.set_page_config(
-            page_title="Energy-use profiles explorer",
-            layout="wide",
-            page_icon=favicon,
-        )
+    favicon = Image.open(f"{current_dir}/images/nesta_favicon.png")
+    nesta_logo = Image.open(f"{current_dir}/images/nesta_logo.png")
+    # Configure your browser tab by adding a title, changing the layout, and adding an icon to appear on your browser tab
+    st.set_page_config(
+        page_title="Energy-use profiles explorer",
+        layout="wide",
+        page_icon=favicon,
+    )
 
-        # Setting the CSS style for the app
-        set_css_style()
+    # Setting the CSS style for the app
+    set_css_style()
 
-        with st.sidebar:
+    with st.sidebar:
+        side_bar_options = set_up_sidebar()
+    
+    if side_bar_options == "About the explorer":
+        st.image(nesta_logo, width=200)
+        about_dashboard_page()
+    elif side_bar_options == "Explore the results":
+        overview_results_page()
+    elif side_bar_options == "Explore an energy-use profile":
+        select_profile_page()
+    else:
+        about_data_page()
 
-            side_bar_options = set_up_sidebar()
-
-        if side_bar_options == "About the explorer":
-            st.image(nesta_logo, width=200)
-            about_dashboard_page()
-        elif side_bar_options == "Explore the results":
-            overview_results_page()
-        elif side_bar_options == "Explore an energy-use profile":
-            select_profile_page()
-        else:
-            about_data_page()
-
-
-energy_profiles_explorer()
+with st.spinner("Loading the Energy-use profiles explorer..."):
+    energy_profiles_explorer()
