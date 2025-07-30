@@ -34,7 +34,14 @@ pip install -r requirements.txt
 pip install pre-commit
 ```
 
-3. Run the dashboard locally with:
+3. If new data is made available in the project S3 bucket then run the following to process and save data to S3:
+
+```
+export PYTHONPATH=$PWD
+python getters/data_processing.py
+```
+
+4. Run the dashboard locally with:
 
 ```
 streamlit run energy_profiles_explorer.py

@@ -5,13 +5,17 @@ This script only needs to be run once to generate the required CSV files, by doi
 python data_getters/data_processing.py
 """
 
+# package imports
 import numpy as np
 import pandas as pd
 import os
 import logging
 
+# local imports
+from config import configs
+
 inputs_path = "s3://asf-energy-use-profiles/2nd_phase_results/inputs/"
-outputs_path = "s3://asf-energy-use-profiles/2nd_phase_results/outputs/"
+outputs_path = "s3://nesta-open-data/asf_energy_use_profiles_explorer/"
 
 
 def process_df_distribution_households():
@@ -49,6 +53,13 @@ def process_df_energy_consumption_metrics_per_profile():
     )
     profile_annual_avgs["avg_annual_gas_consumption_kWh"] = (
         profile_annual_avgs["Mean gas usage"] * 48 * 365 / 1000
+    )
+
+    # Removing profiles with low count of households on gas
+    profile_annual_avgs["avg_annual_gas_consumption_kWh"] = np.where(
+        profile_annual_avgs["profile"].isin(configs.profiles_low_gas_count),
+        np.nan,
+        profile_annual_avgs["avg_annual_gas_consumption_kWh"],
     )
 
     profile_annual_avgs = profile_annual_avgs[
@@ -105,6 +116,15 @@ def process_hh_consumption_per_profile(
 
     # Rename columns to follow the format "profile_X_avg" and "profile_X_std" for each profile X
     merged.columns = [col.replace("cluster ", "profile_") for col in merged.columns]
+
+    if energy_type == "gas":
+        avg_cols_to_drop = [
+            f"profile_{profile}_avg" for profile in configs.profiles_low_gas_count
+        ]
+        std_cols_to_drop = [
+            f"profile_{profile}_std" for profile in configs.profiles_low_gas_count
+        ]
+        merged.drop(columns=avg_cols_to_drop + std_cols_to_drop, inplace=True)
 
     merged.to_csv(
         os.path.join(
