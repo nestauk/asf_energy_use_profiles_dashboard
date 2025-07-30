@@ -15,7 +15,7 @@ import logging
 from config import configs
 
 inputs_path = "s3://asf-energy-use-profiles/2nd_phase_results/inputs/"
-outputs_path = "s3://asf-energy-use-profiles/2nd_phase_results/outputs/"
+outputs_path = "s3://nesta-open-data/asf_energy_use_profiles_explorer/"
 
 
 def process_df_distribution_households():

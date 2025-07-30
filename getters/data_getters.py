@@ -6,10 +6,12 @@ import pandas as pd
 import streamlit as st
 import os
 
-outputs_path = "s3://asf-energy-use-profiles/2nd_phase_results/outputs/"
+outputs_path = "s3://nesta-open-data/asf_energy_use_profiles_explorer/"
 
 
 st.cache_data(show_spinner="Loading data...")
+
+
 def get_distribution_households() -> pd.DataFrame:
     """
     Get the CSV with distribution of households per profile (numbers and percentages).
@@ -28,6 +30,8 @@ def get_distribution_households() -> pd.DataFrame:
 
 
 st.cache_data(show_spinner="Loading data...")
+
+
 def get_annual_energy_consumption_avg_per_profile() -> pd.DataFrame:
     """
     Get the CSV with average annual electricity and gas consumption per profile.
@@ -46,6 +50,8 @@ def get_annual_energy_consumption_avg_per_profile() -> pd.DataFrame:
 
 
 st.cache_data(show_spinner="Loading data...")
+
+
 def get_hh_consumption_per_profile(
     energy_type: str = "electricity", season: str = ""
 ) -> pd.DataFrame:
@@ -80,6 +86,8 @@ def get_hh_consumption_per_profile(
 
 
 st.cache_data(show_spinner="Loading data...")
+
+
 def get_contextual_information() -> pd.DataFrame:
     """
     Get the CSV with contextual information about the profiles.
