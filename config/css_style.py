@@ -27,7 +27,7 @@ def set_css_style():
         /* Apply Averta font globally to all Streamlit UI elements */
         html, body, .stApp, .stMarkdown,
         .stButton button, .stMetric, .stMarkdown, .stTextInput, .stNumberInput,
-        .stSelectbox, .stSidebar, .stHeader, h1, h2, h3, h4, h5, h6, label, span, div {
+        .stSelectbox, .stSidebar, .stHeader, h1, h2, h3, h4, h5, h6, label, div {
             font-family: 'Averta', sans-serif !important;
         }
 

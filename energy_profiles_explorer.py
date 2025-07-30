@@ -85,7 +85,7 @@ def energy_profiles_explorer():
         nesta_logo = Image.open(f"{current_dir}/images/nesta_logo.png")
         # Configure your browser tab by adding a title, changing the layout, and adding an icon to appear on your browser tab
         st.set_page_config(
-            page_title="Energy-use profiles",
+            page_title="Energy-use profiles explorer",
             layout="wide",
             page_icon=favicon,
         )
