@@ -51,7 +51,7 @@ def create_overview_tab():
     """
     Creates the overview tab for the 'Explore the results' page.
     """
-    st.write("'Explore the results' is organised into the following main sections:")
+    st.write("'Explore the results' is organised into the following main sections (you can select them above):")
     st.markdown(
         """
                 ##### Key findings
