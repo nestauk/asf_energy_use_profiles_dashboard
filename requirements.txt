@@ -4,3 +4,4 @@ altair
 streamlit-option-menu
 s3fs
 openpyxl
+botocore==1.39.16
