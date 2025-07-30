@@ -454,7 +454,7 @@ def setup_property_information_section(profile_selector: int):
     st.markdown("### 🏘️ Property information")
     st.markdown(
         """
-        In this section you can find information about the properties in this profile, such as property age, type, region and Index of Multiple Deprivation (IMD) quintile. Note that IMD quintiles reflect the deprivation of a geographical area, not of an individual household. Therefore, a household in a highly deprived area is not necessarily deprived itself, just as a household in a less deprived area is not necessarily affluent.
+        In this section you can find information about the properties in this profile, such as property age and type, energy performance rating, region and Index of Multiple Deprivation (IMD) quintile. Note that IMD quintiles reflect the deprivation of a geographical area, not of an individual household. Therefore, a household in a highly deprived area is not necessarily deprived itself, just as a household in a less deprived area is not necessarily affluent.
 
         """
     )
@@ -497,6 +497,7 @@ def setup_property_information_section(profile_selector: int):
     ):
         col_1, london_col, built_before_1930_col, col_2 = st.columns(4)
         col_3, detached_col, flats_col, col_4 = st.columns(4)
+        col_5, epc_col, col_6 = st.columns(3)
         flats_value, flats_diff = get_value_and_delta(
             profile_selector,
             contextual_data,
@@ -510,6 +511,7 @@ def setup_property_information_section(profile_selector: int):
         )
     else:
         london_col, built_before_1930_col, detached_col = st.columns(3)
+        col_5, epc_col, col_6 = st.columns(3)
         setup_additional_property_info_expander()
 
     london_value, london_diff = get_value_and_delta(
@@ -540,6 +542,16 @@ def setup_property_information_section(profile_selector: int):
         label="Detached properties",
         value=detached_value,
         delta=detached_diff,
+        border=True,
+    )
+
+    epc_value, epc_diff = get_value_and_delta(
+        profile_selector, contextual_data, "epc_c_or_above"
+    )
+    epc_col.metric(
+        label="EPC rating C or above",
+        value=epc_value,
+        delta=epc_diff,
         border=True,
     )
 
@@ -740,6 +752,32 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
     setup_additional_central_heating_and_technologies_expander(profile_selector)
 
 
+def setup_tariff_section(profile_selector: int):
+    """
+    Sets up the section for displaying tariff information metrics for the selected energy-use profile.
+
+    Args:
+        profile_selector (int): profile number selected by the user.
+    """
+    st.markdown("### 💰 Tariff information")
+    st.markdown(
+        """
+        In this section you can find information about the percentage of households on a time-of-use (ToU) tariff.
+        """
+    )
+    tou_tariff_col, col_1, col_2 = st.columns(3)
+    with tou_tariff_col:
+        tou_value, tou_diff = get_value_and_delta(
+            profile_selector, contextual_data, "time_of_use_tariff"
+        )
+        st.metric(
+            label="ToU tariff",
+            value=tou_value,
+            delta=tou_diff,
+            border=True,
+        )
+
+
 def select_profile_page():
     """
     This function sets up the 'Select a profile' page for the energy-use profiles explorer dashboard.
@@ -778,3 +816,4 @@ def select_profile_page():
     setup_household_info_section(profile_selector)
     setup_property_information_section(profile_selector)
     setup_central_heating_and_technologies_section(profile_selector)
+    setup_tariff_section(profile_selector)

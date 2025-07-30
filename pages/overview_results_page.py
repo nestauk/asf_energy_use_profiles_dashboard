@@ -360,6 +360,16 @@ def create_property_information_expander():
         )
         st.altair_chart(chart_property_flats, use_container_width=True)
 
+    st.markdown("#### 🏅 Energy Performance Certificate (EPC) ratings")
+    epc_c_or_above_col, col_2 = st.columns(2)
+    with epc_c_or_above_col:
+        chart_epc_c_or_above = plot_contextual_info(
+            data=contextual_data,
+            variable="epc_c_or_above",
+            title=["Properties with EPC rating C or above"],
+        )
+        st.altair_chart(chart_epc_c_or_above, use_container_width=True)
+
 
 def create_central_heating_and_tech_expander():
     """
@@ -441,6 +451,23 @@ def create_central_heating_and_tech_expander():
         st.altair_chart(chart_ev_charging, use_container_width=True)
 
 
+def create_tariff_expander():
+    """
+    Creates an expander for electricity tariff information in the context tab.
+    """
+    st.markdown("#### 💰 Time-of-use (ToU) tariff")
+
+    # Electricity tariff
+    tariff_col, col_2 = st.columns(2)
+    with tariff_col:
+        chart_tariff = plot_contextual_info(
+            data=contextual_data,
+            variable="time_of_use_tariff",
+            title="Households on a ToU tariff",
+        )
+        st.altair_chart(chart_tariff, use_container_width=True)
+
+
 def create_context_tab():
     st.markdown("## 📄 Contextual information")
 
@@ -465,6 +492,9 @@ def create_context_tab():
     # Create an expander for central heating and presence of technologies
     with st.expander(label="Central heating and presence of technologies", icon="🔋"):
         create_central_heating_and_tech_expander()
+
+    with st.expander(label="Electricity tariff", icon="⚡"):
+        create_tariff_expander()
 
 
 def create_daily_consumption_tab():
