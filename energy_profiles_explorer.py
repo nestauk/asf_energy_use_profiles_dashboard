@@ -13,7 +13,6 @@ streamlit run energy_profiles_explorer.py
 
 ## Package imports
 import streamlit as st  # For building the web app
-import pandas as pd  # For simple data manipulation
 from PIL import Image  # For loading images
 import altair as alt  # For creating interactive charts with Altair
 from streamlit_option_menu import option_menu  # For creating a sidebar menu
@@ -30,7 +29,6 @@ from pages.about_data_page import about_data_page
 # Setting up themes and fonts
 alt.themes.register("nestafont", nestafont)
 alt.themes.enable("nestafont")
-set_css_style()
 
 # Get the current directory to load images and other resources
 current_dir = os.getcwd()
@@ -85,10 +83,13 @@ def energy_profiles_explorer():
         nesta_logo = Image.open(f"{current_dir}/images/nesta_logo.png")
         # Configure your browser tab by adding a title, changing the layout, and adding an icon to appear on your browser tab
         st.set_page_config(
-            page_title="Energy-use profiles explorer",
+            page_title="Energy-use profiles",
             layout="wide",
             page_icon=favicon,
         )
+
+        # Setting the CSS style for the app
+        set_css_style()
 
         with st.sidebar:
 
