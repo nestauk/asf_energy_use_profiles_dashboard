@@ -47,8 +47,6 @@ python getters/data_processing.py
 streamlit run energy_profiles_explorer.py
 ```
 
-Note that the dashboard has been deployed to [Streamlit Cloud](https://share.streamlit.io/?utm_source=streamlit&utm_medium=referral&utm_campaign=main&utm_content=-ss-streamlit-io-topright) and any changes made to the code will be automatically deployed once the code is merged to `dev`.
-
 ## 🗂️ Repository structure
 
 The repository structure and key scripts are highlighted below:

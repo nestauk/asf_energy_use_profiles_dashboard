@@ -18,7 +18,7 @@ def about_dashboard_page():
     st.markdown("## What is an energy-use profile?")
     st.markdown(
         """
-                An 'energy-use profile' is a group of households that consume energy similarly. Each energy-use profile can be described by the:
+                An 'energy-use profile' is a group of households who have similar patterns of energy usage. Each energy-use profile can be described by the:
 
                 - proportion of the population it represents
                 - average annual electricity and gas consumption
