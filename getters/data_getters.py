@@ -10,15 +10,13 @@ outputs_path = "s3://nesta-open-data/asf_energy_use_profiles_explorer/"
 
 
 st.cache_data(show_spinner="Loading data...")
-
-
 def get_distribution_households() -> pd.DataFrame:
     """
     Get the CSV with distribution of households per profile (numbers and percentages).
     Contains three columns:
-       - "profile"
-       - "number_of_households"
-       - "perc_of_households"
+       - profile
+       - number_of_households
+       - perc_of_households
 
     Returns:
         pd.DataFrame: A DataFrame containing the distribution of households per profile.
@@ -30,15 +28,13 @@ def get_distribution_households() -> pd.DataFrame:
 
 
 st.cache_data(show_spinner="Loading data...")
-
-
 def get_annual_energy_consumption_avg_per_profile() -> pd.DataFrame:
     """
     Get the CSV with average annual electricity and gas consumption per profile.
     Contains three columns:
-        - "profile"
-        - "avg_annual_elec_consumption_kWh"
-        - "avg_annual_gas_consumption_kWh"
+        - profile
+        - avg_annual_elec_consumption_kWh
+        - avg_annual_gas_consumption_kWh
 
     Returns:
         pd.DataFrame: A DataFrame containing the average annual energy consumption per profile.
@@ -92,8 +88,8 @@ def get_contextual_information() -> pd.DataFrame:
     """
     Get the CSV with contextual information about the profiles.
     Contains columns:
-        - "profile"
-        - "number_households"
+        - profile
+        - number_households
         - proportions and counts for a variety of contextual household and property information
 
     Returns:
