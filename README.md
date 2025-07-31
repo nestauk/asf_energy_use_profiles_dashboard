@@ -1,8 +1,10 @@
 # ⚡ 🔌 Energy-use profiles explorer
 
-This repository contains the code to create the **Energy-use Profiles Explorer dashboard**, a dashboard for exploring **energy-use profiles** built smart meter data from a representative sample of households in Great Britain. **Energy-use profiles** are groups of households with similar energy consumption patterns.
+This repository contains the code to create the **Energy-use Profiles Explorer dashboard**, a dashboard for exploring **energy-use profiles**. **Energy-use profiles** are groups of households with similar energy consumption patterns, and they are built using smart meter data from a representative sample of households in Great Britain.
 
-The dashboard is available at [add website link here]. To know more about the project please refer to the [project page](https://www.nesta.org.uk/project/using-smart-meters-to-identify-energy-use-profiles/).
+The dashboard is available at: https://energy-use-profiles-explorer.dap-tools.uk/
+
+To know more about the project please refer to the [project page](https://www.nesta.org.uk/project/using-smart-meters-to-identify-energy-use-profiles/).
 
 The dashboard was built using [Streamlit](https://streamlit.io/). To run this dashboard locally or to contribute to its development, follow the instructions in the Setup section.
 
