@@ -61,7 +61,7 @@ def create_chart_comparing_daily_consumption_summer_winter(
         .mark_line()
         .encode(
             x=alt.X("read_time:O", title="Time of the day"),
-            y=alt.Y(f"{profile_col}_avg:Q", title=f"{energy_type} consumption (Wh)"),
+            y=alt.Y(f"{profile_col}_avg:Q", title=f"{energy_type} consumption (in Wh)"),
             color=alt.value(colour),
             strokeDash=alt.StrokeDash(
                 "season:N"
