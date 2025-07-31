@@ -68,7 +68,7 @@ def about_dashboard_page():
         """
                 This tool was developed by [Nesta](https://www.nesta.org.uk/) to be used by researchers, policymakers, and anyone interested in understanding household energy consumption.
 
-                You can also find insights in our [report](), read the methodology in the [appendix]() and read more about this [Nesta project](https://www.nesta.org.uk/project/using-smart-meters-to-identify-energy-use-profiles/).
+                You can also find insights in our [report](https://www.nesta.org.uk/report/understanding-gb-energy-consumption-patterns/), read the methodology in the [appendix](https://media.nesta.org.uk/documents/Energy_profiles__technical_appendix_2nd_phase_results_.pdf) and read more about this [Nesta project](https://www.nesta.org.uk/project/using-smart-meters-to-identify-energy-use-profiles/).
                 To provide feedback on the explorer please [fill this form](https://docs.google.com/forms/d/19nhqeg0HZlkrk8zWJthrhDjVOkOINRGZtIqqHrUTB8A).
                 """
     )
