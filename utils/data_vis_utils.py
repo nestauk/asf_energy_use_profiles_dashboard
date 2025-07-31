@@ -43,7 +43,10 @@ def create_chart_comparing_daily_consumption_summer_winter(
     """
     profile_col = "profile_" + str(profile)
 
-    title = f"Daily average {energy_type} consumption for profile {profile}: summer and winter"
+    title = [
+        f"Daily average {energy_type} consumption for profile {profile}:",
+        "summer and winter",
+    ]
 
     # Add a season column to each dataframe
     daily_data_summer["season"] = "Summer"
@@ -57,8 +60,8 @@ def create_chart_comparing_daily_consumption_summer_winter(
         alt.Chart(combined_data, title=alt.TitleParams(text=title, anchor="middle"))
         .mark_line()
         .encode(
-            x=alt.X("read_time:O", title=""),
-            y=alt.Y(f"{profile_col}_avg:Q", title=f"{energy_type} consumption (kWh)"),
+            x=alt.X("read_time:O", title="Time of the day"),
+            y=alt.Y(f"{profile_col}_avg:Q", title=f"{energy_type} consumption (Wh)"),
             color=alt.value(colour),
             strokeDash=alt.StrokeDash(
                 "season:N"
@@ -100,10 +103,7 @@ def create_chart_daily_consumption(
     """
     profile_col = "profile_" + str(profile)
 
-    title = [
-        f"Daily average {energy_type} consumption for",
-        f"profile {profile}: summer and winter",
-    ]
+    title = f"Daily average {energy_type} consumption for profile {profile}"
     title = f" in {season}" if season != "" else title
 
     # Line chart for the mean/average consumption
@@ -111,8 +111,8 @@ def create_chart_daily_consumption(
         alt.Chart(daily_data, title=alt.TitleParams(text=title, anchor="middle"))
         .mark_line()
         .encode(
-            x=alt.X("read_time:O", title=""),
-            y=alt.Y(f"{profile_col}_avg:Q", title=f"{energy_type} consumption (kWh)"),
+            x=alt.X("read_time:O", title="Time of the day"),
+            y=alt.Y(f"{profile_col}_avg:Q", title=f"{energy_type} consumption (in Wh)"),
             color=alt.value(colour),
             tooltip=[
                 alt.Tooltip("read_time:O", title="Half hour"),
@@ -143,7 +143,7 @@ def create_chart_daily_consumption(
             alt.Chart(daily_data)
             .mark_area(opacity=0.3)
             .encode(
-                x=alt.X("read_time:O", title=""),
+                x=alt.X("read_time:O", title="Time of the day"),
                 y=alt.Y("y_min:Q", title=""),
                 y2="y_max:Q",
                 color=alt.value(colour),
@@ -152,8 +152,12 @@ def create_chart_daily_consumption(
                     alt.Tooltip(
                         f"{profile_col}_avg:Q", title="Mean Value", format=".0f"
                     ),
-                    alt.Tooltip("y_min:Q", title="Lower bound of error", format=".0f"),
-                    alt.Tooltip("y_max:Q", title="Upper bound of error", format=".0f"),
+                    alt.Tooltip(
+                        "y_min:Q", title="Average - standard deviation", format=".0f"
+                    ),
+                    alt.Tooltip(
+                        "y_max:Q", title="Average + standard deviation", format=".0f"
+                    ),
                 ],
             )
         )
@@ -206,7 +210,7 @@ def create_chart_daily_consumption_multiple_profiles(
         chart = alt.Chart(data).mark_line(strokeDash=[5, 5])
 
     chart = chart.encode(
-        x=alt.X("read_time:O", title=""),
+        x=alt.X("read_time:O", title="Time of the day"),
         y=alt.Y("consumption:Q", title=f"{energy_type} consumption (in Wh)"),
         color=alt.Color("profile:N", title="Profile", scale=alt.Scale(range=colors)),
         tooltip=[
@@ -220,9 +224,9 @@ def create_chart_daily_consumption_multiple_profiles(
     )
 
     chart_title = (
-        f"Daily average {energy_type} consumption (in Wh)"
+        f"Daily average {energy_type} consumption"
         if season == ""
-        else f"Daily average {energy_type} consumption (in Wh): comparing seasons"
+        else f"Daily average {energy_type} consumption by season"
     )
 
     chart = chart.properties(
@@ -286,7 +290,7 @@ def create_chart_average_annual_consumption(
     data = profile_annual_avgs.copy()
 
     y_col = f"avg_annual_{energy_type[:4]}_consumption_kWh"
-    title = f"Average annual {energy_type} consumption (kWh)"
+    title = f"Average annual {energy_type} consumption"
 
     if energy_type == "gas":
         data = data[~data["profile"].isin(configs.profiles_low_gas_count)]
@@ -296,7 +300,7 @@ def create_chart_average_annual_consumption(
         .mark_bar()
         .encode(
             x=alt.X("profile:O", title="Profile", axis=alt.Axis(labelAngle=0)),
-            y=alt.Y(f"{y_col}:Q", title=f"{energy_type} consumption (kWh)"),
+            y=alt.Y(f"{y_col}:Q", title=f"{energy_type} consumption (in kWh)"),
             color=alt.value(colour),
             tooltip=[
                 alt.Tooltip("profile:O", title="Profile"),
