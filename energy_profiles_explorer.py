@@ -29,6 +29,7 @@ from pages.about_data_page import about_data_page
 # Setting up themes and fonts
 alt.themes.register("nestafont", nestafont)
 alt.themes.enable("nestafont")
+set_css_style()
 
 # Get the current directory to load images and other resources
 current_dir = os.getcwd()
@@ -92,7 +93,7 @@ def energy_profiles_explorer():
 
     with st.sidebar:
         side_bar_options = set_up_sidebar()
-    
+
     if side_bar_options == "About the explorer":
         st.image(nesta_logo, width=200)
         about_dashboard_page()
@@ -102,6 +103,7 @@ def energy_profiles_explorer():
         select_profile_page()
     else:
         about_data_page()
+
 
 with st.spinner("Loading the Energy-use profiles explorer..."):
     energy_profiles_explorer()
