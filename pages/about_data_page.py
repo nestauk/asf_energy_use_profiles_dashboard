@@ -39,7 +39,7 @@ Elam, S., Few, J., McKenna, E., Hanmer, C., Pullinger, M., Zapata-Webborn, E., O
 
     st.markdown("""
         - **England**: 24.7 million households in 2023-24, according to the [English Housing Survey 2023 to 2024](https://www.gov.uk/government/statistics/chapters-for-english-housing-survey-2023-to-2024-headline-findings-on-demographics-and-household-resilience/chapter-1-profile-of-households-and-dwellings)
-        - **Scotland**: 2.55 million households in 2023, according to the [National Records of Scotland](https://www.nrscotland.gov.uk/publications/households-and-dwellings-in-scotland-2024/)
+        - **Scotland**: 2.55 million households in 2024, according to the [National Records of Scotland](https://www.nrscotland.gov.uk/publications/households-and-dwellings-in-scotland-2024/)
         - **Wales**: 1.38 million households in mid-2023, according to the [Welsh Government](https://www.gov.wales/household-estimates-mid-2012-mid-2023-html)
         
                 """)
