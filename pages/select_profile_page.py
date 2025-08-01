@@ -105,7 +105,7 @@ def setup_profile_main_metrics(profile_selector: int):
     )
 
     n_households_sample.metric(
-        label="Number of households (in sample)",
+        label="Number of households in sample",
         value=f"{int(profile_nums_filtered['number_of_households']):,}",
         border=True,
     )
