@@ -10,11 +10,21 @@ The dashboard was built using [Streamlit](https://streamlit.io/). To run this da
 
 ## 🧩 Data
 
-The analyses presented in this dashboard were conducted using **Smart Energy Research Lab (SERL) observatory data** [1], containing longitudinal smart meter electricity and gas data for over 13,000 households in Great Britain. The data is accessible through the [UK Data Service SecureLab](https://ukdataservice.ac.uk/) by accredited researchers.
+### Smart Energy Research Lab (SERL) Observatory Data
+The analyses presented in this dashboard were conducted using **Smart Energy Research Lab (SERL) observatory data** [1], containing longitudinal smart meter electricity and gas data for over 13,000 households in Great Britain (GB). The data is accessible through the [UK Data Service SecureLab](https://ukdataservice.ac.uk/) by accredited researchers.
 
 The SERL data is a rich source of information, including half-hourly gas and electricity consumption data and household survey data, such as property type, household composition, and income. The data documentation is available on the [data catalogue](https://beta.ukdataservice.ac.uk/datacatalogue/studies/study?id=8666#!/documentation).
 
 [1]: Elam, S., Few, J., McKenna, E., Hanmer, C., Pullinger, M., Zapata-Webborn, E., Oreszczyn, T., Anderson, B., Department for Levelling Up, Housing and Communities, European Centre for Medium-Range Weather Forecasts, Royal Mail Group Limited. (2024). Smart Energy Research Lab Observatory Data, 2019-2024: Secure Access. [data collection]. 8th Edition. UK Data Service. SN: 8666, DOI: http://doi.org/10.5255/UKDA-SN-8666-8
+
+### Number of households in GB
+
+- **England**: 24.7 million households in 2023-24, according to the [English Housing Survey 2023 to 2024](https://www.gov.uk/government/statistics/chapters-for-english-housing-survey-2023-to-2024-headline-findings-on-demographics-and-household-resilience/chapter-1-profile-of-households-and-dwellings)
+- **Scotland**: 2.55 million households in 2023, according to the [National Records of Scotland](https://www.nrscotland.gov.uk/publications/households-and-dwellings-in-scotland-2024/)
+- **Wales**: 1.38 million households in mid-2023, according to the [Welsh Government](https://www.gov.wales/household-estimates-mid-2012-mid-2023-html)
+
+This leads to an estimated total of **28.63 million households** in **GB**. This value is used to calculate the estimated number of GB households in each energy-use profile, which is displayed in the dashboard.
+
 
 ## 🛠️ Setup
 
