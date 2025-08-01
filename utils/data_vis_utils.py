@@ -377,6 +377,8 @@ def plot_contextual_info(data: pd.DataFrame, variable: str, title: str) -> alt.C
 
 
 st.cache_resource()
+
+
 def create_color_scale_bar(
     min_val: float,
     max_val: float,
@@ -392,7 +394,7 @@ def create_color_scale_bar(
         y (float, optional): Y position of the gradient bar. Defaults to 40.
         y2 (float, optional): Y2 position of the gradient bar. Defaults to 80.
     Returns:
-        alt.Chart: An Altair chart object representing the gradient bar.    
+        alt.Chart: An Altair chart object representing the gradient bar.
     """
     # Parameters
     n_steps = 7
@@ -447,8 +449,11 @@ def create_color_scale_bar(
 
 
 def create_gradient_marker_label_chart(
-    gradient_chart: alt.Chart, value: float, energy_type: str, profile: int,
-    y: float = 40
+    gradient_chart: alt.Chart,
+    value: float,
+    energy_type: str,
+    profile: int,
+    y: float = 40,
 ) -> alt.Chart:
     """
     Create a chart with a gradient bar, a marker for a specific value, and a label above the marker.
@@ -464,8 +469,12 @@ def create_gradient_marker_label_chart(
     marker_data = pd.DataFrame(
         {
             "x": [value],
-            "value_formatted": [f"{int(round(value)):,} kWh"], # Format value for display
-            "label": [f"Profile {profile}: {int(round(value)):,} kWh"], # Label for the marker
+            "value_formatted": [
+                f"{int(round(value)):,} kWh"
+            ],  # Format value for display
+            "label": [
+                f"Profile {profile}: {int(round(value)):,} kWh"
+            ],  # Label for the marker
         }
     )
     # Marker for specific value
@@ -476,7 +485,7 @@ def create_gradient_marker_label_chart(
         )
         .encode(
             x=alt.X("x:Q"),
-            y=alt.value(y-2),
+            y=alt.value(y - 2),
             tooltip=[alt.Tooltip("value_formatted:N", title=f"Profile {profile}:")],
         )
     )
@@ -492,8 +501,8 @@ def create_gradient_marker_label_chart(
     chart = (gradient_chart + marker + marker_label).properties(
         title=alt.TitleParams(
             text=[
-                f"Profile {profile} on the annual",
-                f"{energy_type} consumption scale (in kWh)",
+                f"Where profile {profile} falls within the range of annual",
+                f"{energy_type} consumption values across all profiles",
             ],
             anchor="middle",  # center the title
         )
