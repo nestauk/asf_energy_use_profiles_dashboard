@@ -96,16 +96,23 @@ def setup_profile_main_metrics(profile_selector: int):
         distribution_households["profile"] == profile_selector
     ].iloc[0]
 
-    col_1, n_households, perc_households, col_2 = st.columns(4)
+    perc_households, n_households_sample, n_households_estimated_gb = st.columns(3)
 
-    n_households.metric(
-        label="Number of households",
-        value=f"{int(profile_nums_filtered['number_of_households']):,}",
-        border=True,
-    )
     perc_households.metric(
         label="Percentage of households",
         value=str(int(profile_nums_filtered["perc_of_households"].round(0))) + "%",
+        border=True,
+    )
+
+    n_households_sample.metric(
+        label="Number of households in sample",
+        value=f"{int(profile_nums_filtered['number_of_households']):,}",
+        border=True,
+    )
+    estimated = (profile_nums_filtered['perc_of_households']/100)*configs.estimated_number_households_gb
+    n_households_estimated_gb.metric(
+        label="Estimated number of households in GB",
+        value=str(round(estimated, 2)) + " million",
         border=True,
     )
 
