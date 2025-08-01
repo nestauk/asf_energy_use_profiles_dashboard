@@ -6,6 +6,7 @@ Utility functions for visualising data in the dashboard.
 import pandas as pd
 import altair as alt
 import numpy as np
+import streamlit as st
 
 # Local imports
 from config.fonts_setup import NESTA_COLOURS
@@ -375,69 +376,132 @@ def plot_contextual_info(data: pd.DataFrame, variable: str, title: str) -> alt.C
     return chart
 
 
-def setup_coloured_bars(
-    min_val: float, max_val: float, value: float, energy_type: str
+st.cache_resource()
+def create_color_scale_bar(
+    min_val: float,
+    max_val: float,
+    y: float = 40,
+    y2: float = 80,
 ) -> alt.Chart:
     """
-    Creates a vertical gradient bar chart with a marker for a specific value.
-    The gradient bar represents a range of values from min_val to max_val,
-    with a fixed step size of 2000.
-    The marker indicates the specific value within this range.
+    Create a color scale/gradient bar for visualising energy consumption ranges.
+
     Args:
-        min_val (float): Minimum value for the gradient bar.
-        max_val (float): Maximum value for the gradient bar.
-        value (float): Specific value to be marked on the gradient bar.
-        energy_type (str): Type of energy ('Electricity' or 'Gas').
-
+        min_val (float): Minimum value of the range.
+        max_val (float): Maximum value of the range.
+        y (float, optional): Y position of the gradient bar. Defaults to 40.
+        y2 (float, optional): Y2 position of the gradient bar. Defaults to 80.
     Returns:
-        alt.Chart: An Altair chart object showing the vertical gradient bar with a marker.
+        alt.Chart: An Altair chart object representing the gradient bar.    
     """
-    # presenting rounded values
-    value = int(round(value, 0))
+    # Parameters
+    n_steps = 7
 
-    step = 2000
-    min_val = min_val - step  # Start one step below the minimum
-    max_val = max_val + step  # End one step above the maximum
-    min_val = max(min_val, 0)  # Ensure we don't start below 0
+    # Pad range slightly
+    range_padding = (max_val - min_val) * 0.05
+    min_val = max(min_val - range_padding, 0)
+    max_val = max_val + range_padding
 
-    # Generate y values with fixed step
-    y_vals = np.round(np.arange(min_val, max_val + step, step), 1)
+    # Compute bin width
+    bin_width = (max_val - min_val) / n_steps
+
+    # Generate bins
+    x_vals = np.round(np.linspace(min_val, max_val - bin_width, n_steps), 1)
+    x2_vals = np.round(x_vals + bin_width, 1)
 
     gradient_data = pd.DataFrame(
-        {"y": y_vals, "color_value": np.linspace(0, 1, len(y_vals))}
+        {
+            "x": x_vals,
+            "x_formatted": [
+                f"{int(round(x)):,} kWh" for x in x_vals
+            ],  # Format x values for display
+            "x2": x2_vals,
+            "x2_formatted": [
+                f"{int(round(x2)):,} kWh" for x2 in x2_vals
+            ],  # Format x2 values for display
+            "color_value": np.linspace(0, 1, n_steps),
+        }
     )
 
+    # Gradient bar
     gradient = (
         alt.Chart(gradient_data)
-        .mark_rect()
+        .mark_rect(cornerRadius=3)
         .encode(
-            y=alt.Y(
-                "y:Q",
-                scale=alt.Scale(domain=[min_val, max_val]),
-                axis=alt.Axis(title=f"{energy_type} Consumption"),
-            ),
-            y2=alt.Y2("y2:Q"),
-            x=alt.value(0),
-            x2=alt.value(20),
+            x=alt.X("x:Q", title=None, axis=alt.Axis(values=[min_val, max_val])),
+            x2="x2:Q",
+            y=alt.value(y),
+            y2=alt.value(y2),
             color=alt.Color(
                 "color_value:Q",
-                scale=alt.Scale(domain=[0, 1], range=["green", "red"]),
+                scale=alt.Scale(
+                    domain=[0, 1],
+                    range=["#97D9E3", "#18A48C", "#A59BEE", "#9A1BBE", "#0F294A"],
+                ),  # This is an alternative green/yellow/red scale ["#18A48C", "#F7DC6F", "#E74C3C"])
                 legend=None,
             ),
-            tooltip=[alt.Tooltip("y:Q", title="Consumption Level")],
+            tooltip=[
+                alt.Tooltip("x_formatted:N", title="Step start:"),
+                alt.Tooltip("x2_formatted:N", title="Step end:"),
+            ],
         )
-        .transform_calculate(y2=f"datum.y + {step}")
-        .properties(width=30, height=250)
+        .properties(width=50, height=200)
     )
 
+    return gradient
+
+
+def create_gradient_marker_label_chart(
+    gradient_chart: alt.Chart, value: float, energy_type: str, profile: int,
+    y: float = 40
+) -> alt.Chart:
+    """
+    Create a chart with a gradient bar, a marker for a specific value, and a label above the marker.
+    Args:
+        gradient_chart (alt.Chart): The gradient bar chart.
+        value (float): The specific value to mark on the gradient bar.
+        energy_type (str): Type of energy ('electricity' or 'gas').
+        profile (int): Profile number for labelling.
+        y (float, optional): Y position of the marker and label. Defaults to 40.
+    Returns:
+        alt.Chart: An Altair chart object combining the gradient bar, marker, and label.
+    """
+    marker_data = pd.DataFrame(
+        {
+            "x": [value],
+            "value_formatted": [f"{int(round(value)):,} kWh"], # Format value for display
+            "label": [f"Profile {profile}: {int(round(value)):,} kWh"], # Label for the marker
+        }
+    )
+    # Marker for specific value
     marker = (
-        alt.Chart(pd.DataFrame({"y": [value]}))
-        .mark_point(color="black", size=50, shape="circle")
+        alt.Chart(marker_data)
+        .mark_point(
+            color="black", size=120, shape="triangle-down", filled=True, opacity=1
+        )
         .encode(
-            y=alt.Y("y:Q", scale=alt.Scale(domain=[min_val, max_val])), x=alt.value(10)
+            x=alt.X("x:Q"),
+            y=alt.value(y-2),
+            tooltip=[alt.Tooltip("value_formatted:N", title=f"Profile {profile}:")],
         )
     )
 
-    chart = gradient + marker
+    # Label to appear abvove the marker
+    marker_label = (
+        alt.Chart(marker_data)
+        .mark_text(align="center", dy=-15, fontSize=14)
+        .encode(x="x:Q", y=alt.value(y), text="label:N", tooltip=[])
+    )
+
+    # Combining the gradient chart, marker, and label
+    chart = (gradient_chart + marker + marker_label).properties(
+        title=alt.TitleParams(
+            text=[
+                f"Profile {profile} on the annual",
+                f"{energy_type} consumption scale (in kWh)",
+            ],
+            anchor="middle",  # center the title
+        )
+    )
 
     return chart
