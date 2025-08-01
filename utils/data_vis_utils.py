@@ -397,11 +397,6 @@ def create_color_scale_bar(
     # Parameters
     n_steps = 7
 
-    # Pad range slightly
-    range_padding = (max_val - min_val) * 0.05
-    min_val = max(min_val - range_padding, 0)
-    max_val = max_val + range_padding
-
     # Compute bin width
     bin_width = (max_val - min_val) / n_steps
 
