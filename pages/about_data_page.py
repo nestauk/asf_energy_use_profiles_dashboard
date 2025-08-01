@@ -10,6 +10,8 @@ def about_data_page():
     This function will setup an 'About the data' page for the energy-use profiles explorer dashboard.
     """
     st.markdown("# About the data")
+
+    st.markdown("## Smart Energy Research Lab (SERL) Observatory Data")
     st.markdown(
         """The analyses presented in this document were conducted using Smart Energy
 Research Lab (SERL) observatory data, containing longitudinal smart meter electricity and gas data for over 13,000 households in Great Britain. The data is
@@ -25,13 +27,26 @@ accessible through the [UK Data Service SecureLab](https://ukdataservice.ac.uk/)
                 """
     )
 
-    st.markdown("## Data citation")
+    st.markdown("### Data citation")
     st.markdown(
         """
 Elam, S., Few, J., McKenna, E., Hanmer, C., Pullinger, M., Zapata-Webborn, E., Oreszczyn, T., Anderson, B., Department for Levelling Up, Housing and Communities, European Centre for Medium-Range Weather Forecasts, Royal Mail Group Limited. (2024). Smart Energy Research Lab Observatory Data, 2019-2024: Secure Access. [data collection]. 8th Edition. UK Data Service. SN: 8666, DOI: http://doi.org/10.5255/UKDA-SN-8666-8
 
                 """
     )
+
+    st.markdown("## Number of households in GB")
+
+    st.markdown("""
+        - **England**: 24.7 million households in 2023-24, according to the [English Housing Survey 2023 to 2024](https://www.gov.uk/government/statistics/chapters-for-english-housing-survey-2023-to-2024-headline-findings-on-demographics-and-household-resilience/chapter-1-profile-of-households-and-dwellings)
+        - **Scotland**: 2.55 million households in 2024, according to the [National Records of Scotland](https://www.nrscotland.gov.uk/publications/households-and-dwellings-in-scotland-2024/)
+        - **Wales**: 1.38 million households in mid-2023, according to the [Welsh Government](https://www.gov.wales/household-estimates-mid-2012-mid-2023-html)
+        
+                """)
+    
+    st.markdown("""
+This leads to an estimated total of **28.63 million households** in **GB**. This value is used to calculate the estimated number of GB households in each energy-use profile, which is displayed in the dashboard.
+    """)
 
     st.markdown("## Caveats and limitations of the work")
     with st.expander("Small sample of households & information sharing"):
