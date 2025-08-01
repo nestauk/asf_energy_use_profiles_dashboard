@@ -15,7 +15,8 @@ from getters import data_getters as dg
 from utils.data_vis_utils import (
     create_chart_daily_consumption,
     create_chart_comparing_daily_consumption_summer_winter,
-    setup_coloured_bars,
+    create_color_scale_bar,
+    create_gradient_marker_label_chart,
 )
 from utils.data_handling_utils import (
     check_if_value_exists,
@@ -47,8 +48,30 @@ gas_hh_data_winter = dg.get_hh_consumption_per_profile(
 )
 contextual_data = dg.get_contextual_information()
 
+# Setting up the coloured scale bar chart for electricity and gas consumption
+elec_coloured_chart = create_color_scale_bar(
+    min_val=profile_annual_avgs["avg_annual_elec_consumption_kWh"].min(),
+    max_val=profile_annual_avgs["avg_annual_elec_consumption_kWh"].max(),
+)
+gas_coloured_chart = create_color_scale_bar(
+    min_val=profile_annual_avgs["avg_annual_gas_consumption_kWh"].min(),
+    max_val=profile_annual_avgs["avg_annual_gas_consumption_kWh"].max(),
+)
 
-def initial_setup() -> int:
+
+def update_profile_number():
+    """
+    This function updates the selected profile number in the session state based on the user's selection
+    """
+    profile_selected = st.session_state.profile_selector
+    # Extract the profile number from the selected option
+    profile = int(
+        profile_selected.split()[1].split(":")[0]
+    )  # Extract the profile number from the string
+    st.session_state.profile = profile
+
+
+def initial_setup():
     """
     This function sets up the initial configuration for the 'Select a profile' page.
 
@@ -61,39 +84,44 @@ def initial_setup() -> int:
         for i in range(1, 11)
     ]
 
+    if "profile" not in st.session_state:
+        st.session_state.profile = 1  # Default profile number
+
+    if "profile_selector" not in st.session_state:
+        st.session_state.profile_selector = options[0]  # Default to the first profile
+
     # Create a selectbox for profile selection centered in the page (making use of columns)
     col_1, profile_selector_col, col_2 = st.columns((1, 2, 1))
     with profile_selector_col:
         profile_selector = st.selectbox(
-            label="Choose one energy-use profile", options=options, width=500
+            label="Choose one energy-use profile",
+            options=options,
+            width=500,
+            key="profile_selector",
+            on_change=update_profile_number,
         )
-
-    # Extract the profile number from the selected option
-    profile_selector = int(
-        profile_selector.split()[1].split(":")[0]
-    )  # Extract the profile number from the string
 
     # Provide a paragraph with some highlights about this profile
     st.markdown(
-        f"##### Overview: profile {profile_selector} " + highlights[profile_selector]
+        f"##### Overview: profile {st.session_state.profile} "
+        + highlights[st.session_state.profile]
     )
-    return profile_selector
 
 
-def setup_profile_main_metrics(profile_selector: int):
+def setup_profile_main_metrics():
     """
     Sets up the section for displaying information about the selected energy-use profile
     including:
     - Number and proportion of households in the profile
     - Average annual electricity and gas consumption
-
-    Args:
-        profile_selector (int): profile number selected by the user.
     """
 
+    st.markdown(
+        "##### <center>Profile coverage in numbers</center>", unsafe_allow_html=True
+    )
     # METRICS AT THE TOP
     profile_nums_filtered = distribution_households[
-        distribution_households["profile"] == profile_selector
+        distribution_households["profile"] == st.session_state.profile
     ].iloc[0]
 
     col_1, n_households, perc_households, col_2 = st.columns(4)
@@ -109,22 +137,28 @@ def setup_profile_main_metrics(profile_selector: int):
         border=True,
     )
 
+    st.markdown(
+        "##### <center>Average annual energy consumption</center>",
+        unsafe_allow_html=True,
+    )
     profile_annual_avgs_filtered = profile_annual_avgs[
-        profile_annual_avgs["profile"] == profile_selector
+        profile_annual_avgs["profile"] == st.session_state.profile
     ].iloc[0]
     f"{int(profile_nums_filtered['number_of_households']):,}",
-    col_3, avg_annual_elc, col_4 = st.columns(3)
-    avg_annual_elc.metric(
-        label="Average annual electricity consumption",
-        value=f"{
+
+    if st.session_state.profile not in configs.profiles_low_gas_count:
+        avg_annual_elc, avg_annual_gas = st.columns(2)
+        elec_color_col, gas_color_col = st.columns(2)
+
+        avg_annual_elc.metric(
+            label="Average annual electricity consumption",
+            value=f"{
             int(
                 profile_annual_avgs_filtered["avg_annual_elec_consumption_kWh"].round(0)
             ):,}"
-        + " kWh",
-        border=True,
-    )
-    if profile_selector not in configs.profiles_low_gas_count:
-        col_5, avg_annual_gas, col_6 = st.columns(3)
+            + " kWh",
+            border=True,
+        )
 
         avg_annual_gas.metric(
             label="Average annual gas consumption",
@@ -136,49 +170,46 @@ def setup_profile_main_metrics(profile_selector: int):
             border=True,
         )
 
-    # with st.sidebar:
-    #     st.markdown("Profile consumption values in comparison")
-    #     elec_color, gas_color = st.columns(2)
+        with gas_color_col:
+            gas_color_chart = create_gradient_marker_label_chart(
+                gradient_chart=gas_coloured_chart,
+                value=profile_annual_avgs[
+                    profile_annual_avgs["profile"] == st.session_state.profile
+                ]["avg_annual_gas_consumption_kWh"].iloc[0],
+                energy_type="gas",
+                profile=st.session_state.profile,
+            )
+            st.altair_chart(gas_color_chart, use_container_width=True)
+    else:
+        col_3, elec_color_col, col_4 = st.columns((1, 3, 1))
 
-    #     with elec_color:
-    #         elec_color_chart = setup_coloured_bars(
-    #             min_val=profile_annual_avgs["avg_annual_elec_consumption_kWh"].min(),
-    #             max_val=profile_annual_avgs["avg_annual_elec_consumption_kWh"].max(),
-    #             value=profile_annual_avgs[
-    #                 profile_annual_avgs["profile"] == profile_selector
-    #             ]["avg_annual_elec_consumption_kWh"].iloc[0],
-    #             energy_type="Electricity",
-    #         )
-    #         st.altair_chart(elec_color_chart, use_container_width=True)
-
-    #     if profile_selector not in configs.profiles_low_gas_count:
-    #         with gas_color:
-    #             gas_color_chart = setup_coloured_bars(
-    #                 min_val=profile_annual_avgs["avg_annual_gas_consumption_kWh"].min(),
-    #                 max_val=profile_annual_avgs["avg_annual_gas_consumption_kWh"].max(),
-    #                 value=profile_annual_avgs[
-    #                     profile_annual_avgs["profile"] == profile_selector
-    #                 ]["avg_annual_gas_consumption_kWh"].iloc[0],
-    #                 energy_type="Gas",
-    #             )
-    #             st.altair_chart(gas_color_chart, use_container_width=True)
+    with elec_color_col:
+        elec_color_chart = create_gradient_marker_label_chart(
+            gradient_chart=elec_coloured_chart,
+            value=profile_annual_avgs[
+                profile_annual_avgs["profile"] == st.session_state.profile
+            ]["avg_annual_elec_consumption_kWh"].iloc[0],
+            energy_type="electricity",
+            profile=st.session_state.profile,
+        )
+        st.altair_chart(elec_color_chart, use_container_width=True)
 
 
-def setup_daily_consumption_charts(profile_selector: int):
+def setup_daily_consumption_charts():
     """
     Sets up the section for displaying daily consumption charts for electricity
     and gas for the selected energy-use profile
-
-    Args:
-        profile_selector (int): profile number selected by the user.
     """
-    if profile_selector not in configs.profiles_low_gas_count:
+    st.markdown(
+        "##### <center>Daily energy consumption</center>", unsafe_allow_html=True
+    )
+    if st.session_state.profile not in configs.profiles_low_gas_count:
         elec_col, gas_col = st.columns(2)
 
         with gas_col:
             final_chart = create_chart_daily_consumption(
                 daily_data=gas_hh_data,
-                profile=profile_selector,
+                profile=st.session_state.profile,
                 energy_type="gas",
                 colour=NESTA_COLOURS[1],
             )
@@ -188,7 +219,7 @@ def setup_daily_consumption_charts(profile_selector: int):
             "Note that, although graphs are side by side, the range of consumption values might be different for electricity and gas (see y-axis values)."
         )
     else:
-        col_1, elec_col, col_2 = st.columns((1, 2, 1))
+        col_1, elec_col, col_2 = st.columns((1, 5, 1))
 
         st.markdown(
             "Due to the minimal number of on-gas households in this profiles, gas consumption information isn't provided as it wouldn't accurately represent this group."
@@ -197,19 +228,16 @@ def setup_daily_consumption_charts(profile_selector: int):
     with elec_col:
         final_chart = create_chart_daily_consumption(
             daily_data=elec_hh_data,
-            profile=profile_selector,
+            profile=st.session_state.profile,
             energy_type="electricity",
             colour=NESTA_COLOURS[0],
         )
         st.altair_chart(final_chart, use_container_width=True)
 
 
-def setup_seasonal_patterns_expander(profile_selector: int):
+def setup_seasonal_patterns_expander():
     """
     Sets up the section for displaying seasonal patterns of daily consumption
-
-    Args:
-        profile_selector (int): profile number selected by the user.
     """
     elec_col, gas_col = st.columns(2)
 
@@ -217,34 +245,34 @@ def setup_seasonal_patterns_expander(profile_selector: int):
         final_chart = create_chart_comparing_daily_consumption_summer_winter(
             daily_data_summer=elec_hh_data_summer,
             daily_data_winter=elec_hh_data_winter,
-            profile=profile_selector,
+            profile=st.session_state.profile,
             energy_type="electricity",
             colour=NESTA_COLOURS[0],
         )
         st.altair_chart(final_chart, use_container_width=True)
     with gas_col:
-        if profile_selector not in configs.profiles_low_gas_count:
+        if st.session_state.profile not in configs.profiles_low_gas_count:
             final_chart = create_chart_comparing_daily_consumption_summer_winter(
                 daily_data_summer=gas_hh_data_summer,
                 daily_data_winter=gas_hh_data_winter,
-                profile=profile_selector,
+                profile=st.session_state.profile,
                 energy_type="gas",
                 colour=NESTA_COLOURS[1],
             )
             st.altair_chart(final_chart, use_container_width=True)
 
 
-def setup_additional_household_info_expander(profile_selector: int):
+def setup_additional_household_info_expander():
     """
     Sets up an expander for additional household information metrics,
     if at least one of the household information metrics is missing.
     """
     at_least_one_missing_household_info = not (
         check_if_value_exists(
-            contextual_data, profile_selector, "counts_single_occupancy"
+            contextual_data, st.session_state.profile, "counts_single_occupancy"
         )
         and check_if_value_exists(
-            contextual_data, profile_selector, "counts_privately_rented"
+            contextual_data, st.session_state.profile, "counts_privately_rented"
         )
     )
     if at_least_one_missing_household_info:
@@ -252,7 +280,7 @@ def setup_additional_household_info_expander(profile_selector: int):
             "Expand for more household-related information", width=1000, icon="⬇️"
         ):
             if not check_if_value_exists(
-                contextual_data, profile_selector, "counts_single_occupancy"
+                contextual_data, st.session_state.profile, "counts_single_occupancy"
             ):
                 single_pop = get_avg_population_value(
                     contextual_data, "single_occupancy"
@@ -261,7 +289,7 @@ def setup_additional_household_info_expander(profile_selector: int):
                     f"Single occupancy data is not available for this profile due to low counts. {single_pop}% of households in the whole dataset are single occupancy."
                 )
             if not check_if_value_exists(
-                contextual_data, profile_selector, "counts_privately_rented"
+                contextual_data, st.session_state.profile, "counts_privately_rented"
             ):
                 tenure_pop = get_avg_population_value(
                     contextual_data, "privately_rented"
@@ -271,7 +299,7 @@ def setup_additional_household_info_expander(profile_selector: int):
                 )
 
 
-def setup_household_info_section(profile_selector: int):
+def setup_household_info_section():
     """
     Sets up the section for displaying household information metrics for the selected energy-use profile,
     including:
@@ -280,9 +308,6 @@ def setup_household_info_section(profile_selector: int):
     - Working status metrics
     - Income metrics
     - Tenure metrics
-
-    Args:
-        profile_selector (int): profile number selected by the user.
     """
     st.markdown("### 👨‍👩‍👧‍👦 Household information")
     st.markdown(
@@ -292,12 +317,12 @@ def setup_household_info_section(profile_selector: int):
     )
 
     if check_if_value_exists(
-        contextual_data, profile_selector, "counts_single_occupancy"
+        contextual_data, st.session_state.profile, "counts_single_occupancy"
     ):
         # Age of households occupants and number of occupants
         hc_65p_col, hc_adults_child_col, occ_3more_col, occ_single_col = st.columns(4)
         occ_single_value, occ_single_diff = get_value_and_delta(
-            profile_selector, contextual_data, "single_occupancy"
+            st.session_state.profile, contextual_data, "single_occupancy"
         )
         occ_single_col.metric(
             label="Single occupants only",
@@ -309,20 +334,22 @@ def setup_household_info_section(profile_selector: int):
         hc_65p_col, hc_adults_child_col, occ_3more_col = st.columns(3)
 
     if check_if_value_exists(  # when missing for privately rented, also missing for other tenures
-        contextual_data, profile_selector, "counts_privately_rented"
+        contextual_data, st.session_state.profile, "counts_privately_rented"
     ):
 
         priv_rented_prop_col, social_rented_prop_col, owner_occup_prop_col = st.columns(
             (1, 1, 1)
         )
         priv_rented_value, priv_rented_diff = get_value_and_delta(
-            profile_selector, contextual_data, "privately_rented"
+            st.session_state.profile, contextual_data, "privately_rented"
         )
         social_rented_value, social_rented_diff = get_value_and_delta(
-            profile_selector, contextual_data, "social_rented"
+            st.session_state.profile, contextual_data, "social_rented"
         )
         owner_occup_value, owner_occup_diff = get_value_and_delta(
-            profile_selector, contextual_data, "owner_occupier_or_unknown_tenure"
+            st.session_state.profile,
+            contextual_data,
+            "owner_occupier_or_unknown_tenure",
         )
 
         priv_rented_prop_col.metric(
@@ -348,13 +375,13 @@ def setup_household_info_section(profile_selector: int):
     col_3, income_90k_below_col, income_over_90k_col, col_4 = st.columns(4)
 
     hc_65p_value, hc_65p_diff = get_value_and_delta(
-        profile_selector, contextual_data, "adults_65_plus_only"
+        st.session_state.profile, contextual_data, "adults_65_plus_only"
     )
     hc_adults_child_value, hc_adults_child_diff = get_value_and_delta(
-        profile_selector, contextual_data, "adults_and_children"
+        st.session_state.profile, contextual_data, "adults_and_children"
     )
     occ_3more_value, occ_3more_diff = get_value_and_delta(
-        profile_selector, contextual_data, "3plus_occupants"
+        st.session_state.profile, contextual_data, "3plus_occupants"
     )
 
     hc_65p_col.metric(
@@ -377,13 +404,15 @@ def setup_household_info_section(profile_selector: int):
     )
 
     all_not_working_value, all_not_working_diff = get_value_and_delta(
-        profile_selector, contextual_data, "working_status_all_not_working"
+        st.session_state.profile, contextual_data, "working_status_all_not_working"
     )
     all_working_or_students_value, all_working_or_students_diff = get_value_and_delta(
-        profile_selector, contextual_data, "working_status_all_working_and_or_students"
+        st.session_state.profile,
+        contextual_data,
+        "working_status_all_working_and_or_students",
     )
     mix_value, mix_diff = get_value_and_delta(
-        profile_selector, contextual_data, "working_status_mix"
+        st.session_state.profile, contextual_data, "working_status_mix"
     )
 
     all_not_working_col.metric(
@@ -406,10 +435,10 @@ def setup_household_info_section(profile_selector: int):
     )
 
     income_above_90k_value, income_above_90k_diff = get_value_and_delta(
-        profile_selector, contextual_data, "income_above_90k"
+        st.session_state.profile, contextual_data, "income_above_90k"
     )
     income_90k_below_value, income_90k_below_diff = get_value_and_delta(
-        profile_selector, contextual_data, "income_90k_below"
+        st.session_state.profile, contextual_data, "income_90k_below"
     )
 
     income_90k_below_col.metric(
@@ -425,7 +454,7 @@ def setup_household_info_section(profile_selector: int):
         border=True,
     )
 
-    setup_additional_household_info_expander(profile_selector)
+    setup_additional_household_info_expander()
 
 
 def setup_additional_property_info_expander():
@@ -444,12 +473,9 @@ def setup_additional_property_info_expander():
         )
 
 
-def setup_property_information_section(profile_selector: int):
+def setup_property_information_section():
     """
     Sets up the section for displaying property information metrics for the selected energy-use profile,
-
-    Args:
-        profile_selector (int): profile number selected by the user.
     """
     st.markdown("### 🏘️ Property information")
     st.markdown(
@@ -462,13 +488,13 @@ def setup_property_information_section(profile_selector: int):
     imd_1_2_col, imd_3_col, imd_4_5_col = st.columns(3)
 
     imd_1_2_value, imd_1_2_diff = get_value_and_delta(
-        profile_selector, contextual_data, "imd_1_2"
+        st.session_state.profile, contextual_data, "imd_1_2"
     )
     imd_3_value, imd_3_diff = get_value_and_delta(
-        profile_selector, contextual_data, "imd_3"
+        st.session_state.profile, contextual_data, "imd_3"
     )
     imd_4_5_value, imd_4_5_diff = get_value_and_delta(
-        profile_selector, contextual_data, "imd_4_5"
+        st.session_state.profile, contextual_data, "imd_4_5"
     )
 
     imd_1_2_col.metric(
@@ -492,14 +518,14 @@ def setup_property_information_section(profile_selector: int):
 
     if check_if_value_exists(
         contextual_data,
-        profile_selector,
+        st.session_state.profile,
         "counts_property_type_flats_apartments_maisonettes",
     ):
         col_1, london_col, built_before_1930_col, col_2 = st.columns(4)
         col_3, detached_col, flats_col, col_4 = st.columns(4)
         col_5, epc_col, col_6 = st.columns(3)
         flats_value, flats_diff = get_value_and_delta(
-            profile_selector,
+            st.session_state.profile,
             contextual_data,
             "property_type_flats_apartments_maisonettes",
         )
@@ -515,7 +541,7 @@ def setup_property_information_section(profile_selector: int):
         setup_additional_property_info_expander()
 
     london_value, london_diff = get_value_and_delta(
-        profile_selector, contextual_data, "region_greater_london"
+        st.session_state.profile, contextual_data, "region_greater_london"
     )
     london_col.metric(
         label="Properties in Greater London",
@@ -525,11 +551,11 @@ def setup_property_information_section(profile_selector: int):
     )
 
     built_before_1930_value, built_before_1930_diff = get_value_and_delta(
-        profile_selector, contextual_data, "property_built_before_1930"
+        st.session_state.profile, contextual_data, "property_built_before_1930"
     )
 
     detached_value, detached_diff = get_value_and_delta(
-        profile_selector, contextual_data, "property_type_detached"
+        st.session_state.profile, contextual_data, "property_type_detached"
     )
 
     built_before_1930_col.metric(
@@ -546,7 +572,7 @@ def setup_property_information_section(profile_selector: int):
     )
 
     epc_value, epc_diff = get_value_and_delta(
-        profile_selector, contextual_data, "epc_c_or_above"
+        st.session_state.profile, contextual_data, "epc_c_or_above"
     )
     epc_col.metric(
         label="EPC rating C or above",
@@ -556,7 +582,7 @@ def setup_property_information_section(profile_selector: int):
     )
 
 
-def setup_additional_central_heating_and_technologies_expander(profile_selector: int):
+def setup_additional_central_heating_and_technologies_expander():
     """
     Sets up an expander for additional central heating and technologies metrics,
     if at least one of the central heating and technologies metrics is missing.
@@ -566,15 +592,17 @@ def setup_additional_central_heating_and_technologies_expander(profile_selector:
     """
 
     at_least_one_missing_tech_info = not (
-        check_if_value_exists(contextual_data, profile_selector, "counts_ev_charging")
-        and check_if_value_exists(
-            contextual_data, profile_selector, "counts_heat_pumps"
+        check_if_value_exists(
+            contextual_data, st.session_state.profile, "counts_ev_charging"
         )
         and check_if_value_exists(
-            contextual_data, profile_selector, "counts_battery_storage"
+            contextual_data, st.session_state.profile, "counts_heat_pumps"
         )
         and check_if_value_exists(
-            contextual_data, profile_selector, "counts_ch_electric_only"
+            contextual_data, st.session_state.profile, "counts_battery_storage"
+        )
+        and check_if_value_exists(
+            contextual_data, st.session_state.profile, "counts_ch_electric_only"
         )
     )
 
@@ -583,7 +611,7 @@ def setup_additional_central_heating_and_technologies_expander(profile_selector:
             "Expand for more technology-related information", width=1000, icon="⬇️"
         ):
             if not check_if_value_exists(
-                contextual_data, profile_selector, "counts_ev_charging"
+                contextual_data, st.session_state.profile, "counts_ev_charging"
             ):
                 ev_pop = get_avg_population_value(contextual_data, "ev_charging").round(
                     1
@@ -592,7 +620,7 @@ def setup_additional_central_heating_and_technologies_expander(profile_selector:
                     f"EV charging data is not available for this profile due to low counts. {ev_pop}% of households in the whole dataset have EV charging points."
                 )
             if not check_if_value_exists(
-                contextual_data, profile_selector, "counts_heat_pumps"
+                contextual_data, st.session_state.profile, "counts_heat_pumps"
             ):
                 hp_pop = get_avg_population_value(contextual_data, "heat_pumps").round(
                     1
@@ -601,7 +629,7 @@ def setup_additional_central_heating_and_technologies_expander(profile_selector:
                     f"Heat pumps data is not available for this profile due to low counts. {hp_pop}% of households in the whole dataset have heat pumps."
                 )
             if not check_if_value_exists(
-                contextual_data, profile_selector, "counts_battery_storage"
+                contextual_data, st.session_state.profile, "counts_battery_storage"
             ):
                 battery_pop = get_avg_population_value(
                     contextual_data, "battery_storage"
@@ -610,7 +638,7 @@ def setup_additional_central_heating_and_technologies_expander(profile_selector:
                     f"Battery storage data is not available for this profile due to low counts. {battery_pop}% of households in the whole dataset have battery storage."
                 )
             if not check_if_value_exists(
-                contextual_data, profile_selector, "counts_ch_electric_only"
+                contextual_data, st.session_state.profile, "counts_ch_electric_only"
             ):
                 ch_fuel_pop = get_avg_population_value(
                     contextual_data, "ch_electric_only"
@@ -620,7 +648,7 @@ def setup_additional_central_heating_and_technologies_expander(profile_selector:
                 )
 
 
-def setup_central_heating_and_technologies_section(profile_selector: int):
+def setup_central_heating_and_technologies_section():
     """
     Sets up the section for displaying central heating and presence of technologies metrics
     for the selected energy-use profile, including:
@@ -632,9 +660,6 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
     - Presence of heat pumps
     - Presence of battery storage
     - Presence of EV charging points
-
-    Args:
-        profile_selector (int): profile number selected by the user.
     """
     st.markdown("### 🔋 Central heating and presence of technologies")
     st.markdown(
@@ -646,26 +671,32 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
     # We create 3 lines of metrics
     smart_heating_col, solar_col, ev_col, ac_col = st.columns(4)
     if check_if_value_exists(
-        contextual_data, profile_selector, "counts_battery_storage"
-    ) and check_if_value_exists(contextual_data, profile_selector, "counts_heat_pumps"):
+        contextual_data, st.session_state.profile, "counts_battery_storage"
+    ) and check_if_value_exists(
+        contextual_data, st.session_state.profile, "counts_heat_pumps"
+    ):
         battery_col, hp_col, ev_charging_col, col_7 = st.columns(4)
     elif check_if_value_exists(
-        contextual_data, profile_selector, "counts_battery_storage"
+        contextual_data, st.session_state.profile, "counts_battery_storage"
     ):
         battery_col, ev_charging_col, hp_col, col_7 = st.columns(4)
     else:
         hp_col, ev_charging_col, battery_col, col_7 = st.columns(4)
 
     smart_heating_c_value, smart_heating_c_diff = get_value_and_delta(
-        profile_selector, contextual_data, "smart_heating_controls"
+        st.session_state.profile, contextual_data, "smart_heating_controls"
     )
     elec_ch_col, gas_ch_col, col_8, col_9 = st.columns(4)
 
     solar_value, solar_diff = get_value_and_delta(
-        profile_selector, contextual_data, "solar_panels"
+        st.session_state.profile, contextual_data, "solar_panels"
     )
-    ev_value, ev_diff = get_value_and_delta(profile_selector, contextual_data, "evs")
-    ac_value, ac_diff = get_value_and_delta(profile_selector, contextual_data, "ac")
+    ev_value, ev_diff = get_value_and_delta(
+        st.session_state.profile, contextual_data, "evs"
+    )
+    ac_value, ac_diff = get_value_and_delta(
+        st.session_state.profile, contextual_data, "ac"
+    )
 
     smart_heating_col.metric(
         label="Smart heating controls",
@@ -692,9 +723,11 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
         border=True,
     )
 
-    if check_if_value_exists(contextual_data, profile_selector, "counts_ev_charging"):
+    if check_if_value_exists(
+        contextual_data, st.session_state.profile, "counts_ev_charging"
+    ):
         ev_charging_value, ev_charging_diff = get_value_and_delta(
-            profile_selector, contextual_data, "ev_charging"
+            st.session_state.profile, contextual_data, "ev_charging"
         )
         ev_charging_col.metric(
             label="EV charging points",
@@ -703,9 +736,11 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
             border=True,
         )
 
-    if check_if_value_exists(contextual_data, profile_selector, "counts_heat_pumps"):
+    if check_if_value_exists(
+        contextual_data, st.session_state.profile, "counts_heat_pumps"
+    ):
         hp_value, hp_diff = get_value_and_delta(
-            profile_selector, contextual_data, "heat_pumps"
+            st.session_state.profile, contextual_data, "heat_pumps"
         )
         hp_col.metric(
             label="Heat pumps",
@@ -715,10 +750,10 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
         )
 
     if check_if_value_exists(
-        contextual_data, profile_selector, "counts_battery_storage"
+        contextual_data, st.session_state.profile, "counts_battery_storage"
     ):
         battery_value, battery_diff = get_value_and_delta(
-            profile_selector, contextual_data, "battery_storage"
+            st.session_state.profile, contextual_data, "battery_storage"
         )
         battery_col.metric(
             label="Battery storage",
@@ -728,13 +763,13 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
         )
 
     if check_if_value_exists(
-        contextual_data, profile_selector, "counts_ch_electric_only"
+        contextual_data, st.session_state.profile, "counts_ch_electric_only"
     ):  # when missing for electric central heating only, also missing for gas central heating only
         elec_ch_value, elec_ch_diff = get_value_and_delta(
-            profile_selector, contextual_data, "ch_electric_only"
+            st.session_state.profile, contextual_data, "ch_electric_only"
         )
         gas_ch_value, gas_ch_diff = get_value_and_delta(
-            profile_selector, contextual_data, "ch_gas_only"
+            st.session_state.profile, contextual_data, "ch_gas_only"
         )
         elec_ch_col.metric(
             label="Electric central heating only",
@@ -749,15 +784,12 @@ def setup_central_heating_and_technologies_section(profile_selector: int):
             border=True,
         )
 
-    setup_additional_central_heating_and_technologies_expander(profile_selector)
+    setup_additional_central_heating_and_technologies_expander()
 
 
-def setup_tariff_section(profile_selector: int):
+def setup_tariff_section():
     """
     Sets up the section for displaying tariff information metrics for the selected energy-use profile.
-
-    Args:
-        profile_selector (int): profile number selected by the user.
     """
     st.markdown("### 💰 Tariff information")
     st.markdown(
@@ -768,7 +800,7 @@ def setup_tariff_section(profile_selector: int):
     tou_tariff_col, col_1, col_2 = st.columns(3)
     with tou_tariff_col:
         tou_value, tou_diff = get_value_and_delta(
-            profile_selector, contextual_data, "time_of_use_tariff"
+            st.session_state.profile, contextual_data, "time_of_use_tariff"
         )
         st.metric(
             label="ToU tariff",
@@ -789,17 +821,17 @@ def select_profile_page():
         "In this page you can select one specific energy-use profile and explore its characteristics and energy consumption patterns."
     )
 
-    profile_selector = initial_setup()
+    initial_setup()
 
     st.markdown("## 🔌 Profiles and their energy consumption")
     st.markdown(
         "In this section you can find information number and proportion of the population covered by this profile, and respective energy consumption patterns."
     )
 
-    setup_profile_main_metrics(profile_selector)
-    setup_daily_consumption_charts(profile_selector)
+    setup_profile_main_metrics()
+    setup_daily_consumption_charts()
     with st.expander(label="Expand to explore seasonal patterns", icon="⬇️"):
-        setup_seasonal_patterns_expander(profile_selector)
+        setup_seasonal_patterns_expander()
 
     st.markdown("## 📄 Contextual information")
     st.markdown(
@@ -813,7 +845,7 @@ def select_profile_page():
                 """
     )
 
-    setup_household_info_section(profile_selector)
-    setup_property_information_section(profile_selector)
-    setup_central_heating_and_technologies_section(profile_selector)
-    setup_tariff_section(profile_selector)
+    setup_household_info_section()
+    setup_property_information_section()
+    setup_central_heating_and_technologies_section()
+    setup_tariff_section()
