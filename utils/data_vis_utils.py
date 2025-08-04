@@ -382,6 +382,7 @@ st.cache_resource()
 def create_color_scale_bar(
     min_val: float,
     max_val: float,
+    energy_type:str,
     y: float = 40,
     y2: float = 80,
 ) -> alt.Chart:
@@ -419,6 +420,10 @@ def create_color_scale_bar(
             "color_value": np.linspace(0, 1, n_steps),
         }
     )
+    if energy_type == "gas":
+        colors = ["#93E9BE",  "#18A48C"]
+    else: # electricity
+        colors = ["#97D9E3", "#0000FF"]
 
     # Gradient bar
     gradient = (
@@ -433,7 +438,7 @@ def create_color_scale_bar(
                 "color_value:Q",
                 scale=alt.Scale(
                     domain=[0, 1],
-                    range=["#97D9E3", "#18A48C", "#A59BEE", "#9A1BBE", "#0F294A"],
+                    range=colors,
                 ),  # This is an alternative green/yellow/red scale ["#18A48C", "#F7DC6F", "#E74C3C"])
                 legend=None,
             ),

@@ -52,10 +52,12 @@ contextual_data = dg.get_contextual_information()
 elec_coloured_chart = create_color_scale_bar(
     min_val=profile_annual_avgs["avg_annual_elec_consumption_kWh"].min(),
     max_val=profile_annual_avgs["avg_annual_elec_consumption_kWh"].max(),
+    energy_type="electricity",
 )
 gas_coloured_chart = create_color_scale_bar(
     min_val=profile_annual_avgs["avg_annual_gas_consumption_kWh"].min(),
     max_val=profile_annual_avgs["avg_annual_gas_consumption_kWh"].max(),
+    energy_type="gas",
 )
 
 
